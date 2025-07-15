@@ -1,3 +1,6 @@
+const User = require('../models/User');
+const getRandomSkin = require('../utils/dropTable');
+
 const CASE_PRICE = 250;
 
 exports.openCase = async (req, res) => {
