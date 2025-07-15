@@ -15,7 +15,7 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/cases', require('./routes/cases'));
 app.use('/api/inventory', require('./routes/inventory'));
 app.use('/api/users', require('./routes/user'));
-app.use('/api/rooms', require('./routes/rooms'));
+app.use('/api/rooms', require('./routes/room'));
 app.use('/api/shop', require('./routes/shop'));
 
 
