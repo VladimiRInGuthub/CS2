@@ -1,19 +1,19 @@
 const mongoose = require('mongoose');
 
 const UserSchema = new mongoose.Schema({
-  steamId: { type: String, required: true, unique: true },
+  steamId: String,
+  googleId: String,
   username: String,
-  coins: { type: Number, default: 1000 },
   avatar: String,
-  createdAt: { type: Date, default: Date.now },
+  coins: { type: Number, default: 1000 },
   inventory: [
     {
       skinId: String,
       rarity: String,
       name: String
-      
     }
-  ]
+  ],
+  createdAt: { type: Date, default: Date.now }
 });
 
 module.exports = mongoose.model('User', UserSchema);

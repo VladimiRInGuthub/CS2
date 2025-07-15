@@ -72,3 +72,46 @@ button:hover {
   from { transform: translateY(0) scale(1); }
   to { transform: translateY(-100vh) scale(0.5); }
 }
+
+/* src/style.css */
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: #0f0f0f;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #fff;
+}
+
+.hero {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(45deg, #4158D0, #C850C0, #FFCC70);
+  background-size: 600% 600%;
+  animation: gradientBG 16s ease infinite;
+}
+
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+button {
+  padding: 14px 32px;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 30px;
+  background: #fff;
+  color: #333;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}

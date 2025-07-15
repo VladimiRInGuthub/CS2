@@ -1,4 +1,3 @@
-
 const steam = require('steam-login');
 
 const steamMiddleware = steam.middleware({
