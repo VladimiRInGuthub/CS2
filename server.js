@@ -16,9 +16,14 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.use(session({
-    secret: 'super-secret',
+    secret: process.env.SESSION_SECRET || require('crypto').randomBytes(32).toString('hex'),
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: true,
+    cookie: {
+      secure: process.env.NODE_ENV === 'production',
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    }
   }));
   app.use(passport.initialize());
   app.use(passport.session());

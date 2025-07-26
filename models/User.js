@@ -10,7 +10,8 @@ const UserSchema = new mongoose.Schema({
     {
       skinId: String,
       rarity: String,
-      name: String
+      name: String,
+      obtainedAt: { type: Date, default: Date.now }
     }
   ],
   createdAt: { type: Date, default: Date.now }
