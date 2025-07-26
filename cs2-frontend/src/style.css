@@ -4,7 +4,7 @@ body, html {
   height: 100%;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: #fff;
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 .hero {
@@ -37,7 +37,7 @@ button {
 }
 
 button:hover {
-  transform: scale(1.1);
+  transform: scale(1.05);
   box-shadow: 0 8px 16px rgba(0,0,0,0.2);
 }
 
@@ -47,79 +47,131 @@ button:hover {
   100% { background-position: 0% 50%; }
 }
 
-/* Animation folle */
-@keyframes explode {
-  0% { transform: scale(1) rotate(0deg); }
-  25% { transform: scale(1.3) rotate(90deg); }
-  50% { transform: scale(1) rotate(180deg); }
-  75% { transform: scale(1.3) rotate(270deg); }
-  100% { transform: scale(1) rotate(360deg); }
+/* Animation pulse pour les éléments en cours de chargement */
+@keyframes pulse {
+  0% { 
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% { 
+    transform: scale(1.1);
+    opacity: 0.7;
+  }
+  100% { 
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
-.hero.explode {
-  animation: explode 2s ease-in-out forwards;
+/* Animation de fadeIn pour l'apparition des éléments */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.particle {
-  position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-  opacity: 0.7;
-  animation: float 5s linear infinite;
+/* Animation de rotation pour les particules */
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
+/* Animation de flottement */
 @keyframes float {
-  from { transform: translateY(0) scale(1); }
-  to { transform: translateY(-100vh) scale(0.5); }
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
 }
 
-/* src/style.css */
-body, html {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  background: #0f0f0f;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: #fff;
+/* Animation pour les effets de scanlines */
+@keyframes scanlines {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
 }
 
-.hero {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(45deg, #4158D0, #C850C0, #FFCC70);
-  background-size: 600% 600%;
-  animation: gradientBG 16s ease infinite;
+/* Classes d'animation pour les composants */
+.fade-in {
+  animation: fadeIn 0.6s ease-out;
 }
 
-@keyframes gradientBG {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+.pulse {
+  animation: pulse 1s infinite;
 }
 
-button {
-  padding: 14px 32px;
-  font-size: 1.2rem;
-  border: none;
-  border-radius: 30px;
-  background: #fff;
-  color: #333;
-  cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+.float {
+  animation: float 3s ease-in-out infinite;
 }
 
-button:hover {
-  transform: scale(1.1);
-  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+.rotate {
+  animation: rotate 2s linear infinite;
 }
 
+/* Amélioration des liens */
 a {
   color: #FF6A00;
   text-decoration: underline;
+  transition: color 0.3s ease;
 }
+
 a:hover {
+  color: #FF8A33;
   text-decoration: none;
+}
+
+/* Amélioration des boutons globale */
+button {
+  transition: all 0.3s ease;
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Effets de glow pour les éléments importants */
+.glow {
+  box-shadow: 0 0 20px rgba(255, 106, 0, 0.5);
+}
+
+.glow-blue {
+  box-shadow: 0 0 20px rgba(0, 170, 255, 0.5);
+}
+
+.glow-green {
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+}
+
+.glow-purple {
+  box-shadow: 0 0 20px rgba(211, 44, 230, 0.5);
+}
+
+.glow-gold {
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+}
+
+/* Scrollbar personnalisée */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(15, 15, 15, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 106, 0, 0.6);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 106, 0, 0.8);
 }

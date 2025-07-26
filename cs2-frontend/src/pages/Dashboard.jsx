@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import DarkVeil from '../components/DarkVeil';
+import BackgroundWrapper from '../components/BackgroundWrapper';
 import '../style.css';
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -17,108 +19,122 @@ const Dashboard = () => {
 
   if (!user) {
     return (
-      <div style={{
-        position: 'relative',
-        minHeight: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}>
-        {/* Fond animé DarkVeil */}
-        <div style={{ 
-          position: 'absolute', 
-          top: 0, 
-          left: 0, 
-          width: '100%', 
-          height: '100%', 
-          zIndex: -1 
+      <BackgroundWrapper 
+        hueShift={180}
+        noiseIntensity={0.05}
+        scanlineIntensity={0.03}
+        speed={0.2}
+        scanlineFrequency={0.005}
+        warpAmount={0.1}
+      >
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '100vh'
         }}>
-          <DarkVeil 
-            hueShift={180}
-            noiseIntensity={0.05}
-            scanlineIntensity={0.03}
-            speed={0.2}
-            scanlineFrequency={0.005}
-            warpAmount={0.1}
-          />
+          <div style={{ 
+            color: '#fff', 
+            textAlign: 'center', 
+            backgroundColor: 'rgba(15, 15, 15, 0.8)',
+            padding: '40px',
+            borderRadius: '12px',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255, 255, 255, 0.1)'
+          }}>
+            <div style={{ 
+              marginBottom: '20px',
+              fontSize: '2rem'
+            }}>
+              ⏳
+            </div>
+            <p style={{ fontSize: '1.2rem', margin: 0 }}>
+              Chargement...
+            </p>
+          </div>
         </div>
-        <p style={{ 
-          color: '#fff', 
-          textAlign: 'center', 
-          backgroundColor: 'rgba(15, 15, 15, 0.8)',
-          padding: '20px',
-          borderRadius: '8px',
-          backdropFilter: 'blur(10px)'
-        }}>
-          Chargement...
-        </p>
-      </div>
+      </BackgroundWrapper>
     );
   }
 
   return (
-    <div style={{
-      position: 'relative',
-      minHeight: '100vh',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      padding: '30px'
-    }}>
-      {/* Fond animé DarkVeil */}
-      <div style={{ 
-        position: 'absolute', 
-        top: 0, 
-        left: 0, 
-        width: '100%', 
-        height: '100%', 
-        zIndex: -1 
-      }}>
-        <DarkVeil 
-          hueShift={180}
-          noiseIntensity={0.05}
-          scanlineIntensity={0.03}
-          speed={0.2}
-          scanlineFrequency={0.005}
-          warpAmount={0.1}
-        />
-      </div>
-
+    <BackgroundWrapper 
+      hueShift={180}
+      noiseIntensity={0.05}
+      scanlineIntensity={0.03}
+      speed={0.2}
+      scanlineFrequency={0.005}
+      warpAmount={0.1}
+    >
       <div style={{
-        backgroundColor: 'rgba(28, 28, 42, 0.9)',
-        color: 'white',
-        borderRadius: '12px',
-        padding: '30px',
-        width: '100%',
-        maxWidth: '420px',
-        textAlign: 'center',
-        boxShadow: '0 0 20px rgba(255,255,255,0.05)',
-        backdropFilter: 'blur(15px)',
-        border: '1px solid rgba(255, 255, 255, 0.1)'
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: '100vh',
+        padding: '30px'
       }}>
-        <img
-          src={user.avatar}
-          alt="Avatar"
-          style={{ borderRadius: '50%', width: '100px', marginBottom: '20px' }}
-        />
-        <h2 style={{ marginBottom: '10px' }}>{user.username}</h2>
-        <p style={{ marginBottom: '20px' }}>💰 Coins : {user.coins}</p>
+        <div style={{
+          backgroundColor: 'rgba(28, 28, 42, 0.9)',
+          color: 'white',
+          borderRadius: '12px',
+          padding: '30px',
+          width: '100%',
+          maxWidth: '420px',
+          textAlign: 'center',
+          boxShadow: '0 0 20px rgba(255,255,255,0.05)',
+          backdropFilter: 'blur(15px)',
+          border: '1px solid rgba(255, 255, 255, 0.1)'
+        }}>
+          <img
+            src={user.avatar}
+            alt="Avatar"
+            style={{ borderRadius: '50%', width: '100px', marginBottom: '20px' }}
+          />
+          <h2 style={{ marginBottom: '10px' }}>{user.username}</h2>
+          <p style={{ marginBottom: '20px' }}>💰 Coins : {user.coins}</p>
 
-        <button
-          onClick={() => alert("(🔜 bientôt) Interface d'ouverture de caisse")}
-          style={buttonStyle}
-        >
-          🎁 Ouvrir une caisse
-        </button>
+          <button
+            onClick={() => navigate('/case-opening')}
+            style={buttonStyle}
+          >
+            🎁 Ouvrir une caisse
+          </button>
 
-        <button
-          onClick={() => alert("(🔜 bientôt) Interface d'inventaire")}
-          style={{ ...buttonStyle, backgroundColor: '#555', marginTop: '12px' }}
-        >
-          🎒 Voir mon inventaire
-        </button>
+          <button
+            onClick={() => navigate('/inventory')}
+            style={{ ...buttonStyle, backgroundColor: '#555', marginTop: '12px' }}
+          >
+            🎒 Voir mon inventaire
+          </button>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: '10px',
+            marginTop: '20px'
+          }}>
+            <button
+              onClick={() => navigate('/login')}
+              style={{
+                ...smallButtonStyle,
+                backgroundColor: '#333'
+              }}
+            >
+              🔧 Login
+            </button>
+            <button
+              onClick={() => navigate('/')}
+              style={{
+                ...smallButtonStyle,
+                backgroundColor: '#333'
+              }}
+            >
+              🏠 Callback
+            </button>
+          </div>
+        </div>
       </div>
-    </div>
+    </BackgroundWrapper>
   );
 };
 
@@ -132,6 +148,16 @@ const buttonStyle = {
   cursor: 'pointer',
   width: '100%',
   maxWidth: '300px'
+};
+
+const smallButtonStyle = {
+  color: '#fff',
+  border: 'none',
+  padding: '8px 16px',
+  borderRadius: '4px',
+  fontSize: '0.9rem',
+  cursor: 'pointer',
+  width: '100%'
 };
 
 export default Dashboard;
