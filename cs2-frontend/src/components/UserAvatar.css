@@ -1,0 +1,325 @@
+/* UserAvatar.css - Animations organiques inspirées d'Apple */
+
+.user-avatar-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  z-index: 10001;
+}
+
+/* Avatar principal */
+.user-avatar {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Halo effect au hover */
+.avatar-halo {
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(162, 89, 255, 0.3) 0%,
+    rgba(162, 89, 255, 0.1) 50%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Image de l'avatar */
+.avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Indicateur de statut */
+.status-indicator {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+  border: 2px solid rgba(28, 28, 42, 0.95);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Backdrop du menu */
+.menu-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 9998;
+}
+
+/* Menu flottant */
+.user-menu {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  min-width: 280px;
+  background: rgba(28, 28, 42, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset,
+    0 8px 32px rgba(162, 89, 255, 0.1);
+  overflow: hidden;
+  z-index: 10000;
+  transform-origin: top right;
+}
+
+/* Header du menu */
+.menu-header {
+  padding: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.menu-user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.menu-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(162, 89, 255, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.menu-user-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.menu-username {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+  line-height: 1.2;
+}
+
+.menu-balance {
+  font-size: 14px;
+  color: #FFD700;
+  font-weight: 500;
+}
+
+/* Séparateur */
+.menu-separator {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  margin: 0 20px;
+}
+
+/* Items du menu */
+.menu-items {
+  padding: 8px 0;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  position: relative;
+  overflow: hidden;
+}
+
+.menu-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(162, 89, 255, 0.1),
+    transparent
+  );
+  transform: translateX(-100%);
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.menu-item:hover::before {
+  transform: translateX(100%);
+}
+
+.menu-item-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  text-decoration: none;
+  color: inherit;
+}
+
+.menu-item-icon {
+  font-size: 18px;
+  width: 24px;
+  text-align: center;
+  transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.menu-item:hover .menu-item-icon {
+  transform: scale(1.1);
+}
+
+.menu-item-label {
+  font-size: 15px;
+  font-weight: 500;
+  color: #ffffff;
+  flex: 1;
+}
+
+/* Item destructif (déconnexion) */
+.menu-item.destructive {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 8px;
+}
+
+.menu-item.destructive .menu-item-label {
+  color: #ff6b6b;
+}
+
+.menu-item.destructive:hover {
+  background-color: rgba(255, 107, 107, 0.1);
+}
+
+/* Animations de micro-interactions */
+@keyframes avatarPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@keyframes menuSlideIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes menuSlideOut {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.8) translateY(-10px);
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .user-menu {
+    position: fixed;
+    top: auto;
+    bottom: 20px;
+    right: 20px;
+    left: 20px;
+    min-width: auto;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  
+  .menu-items {
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+}
+
+/* Amélioration de l'accessibilité */
+.user-avatar:focus {
+  outline: 2px solid rgba(162, 89, 255, 0.5);
+  outline-offset: 2px;
+}
+
+.menu-item:focus {
+  outline: none;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Support pour les préférences de réduction de mouvement */
+@media (prefers-reduced-motion: reduce) {
+  .user-avatar,
+  .avatar-halo,
+  .status-indicator,
+  .menu-item,
+  .menu-item-icon {
+    transition: none;
+  }
+  
+  .user-menu {
+    animation: none;
+  }
+}
+
+/* Effets de profondeur pour les écrans haute densité */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .user-avatar {
+    border-width: 0.5px;
+  }
+  
+  .menu-separator {
+    height: 0.5px;
+  }
+}
+
+/* Support pour le mode sombre système */
+@media (prefers-color-scheme: dark) {
+  .user-menu {
+    background: rgba(18, 18, 30, 0.95);
+  }
+} 

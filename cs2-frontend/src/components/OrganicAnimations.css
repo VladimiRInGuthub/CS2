@@ -1,0 +1,441 @@
+/* OrganicAnimations.css - Effets organiques inspirés d'Apple */
+
+/* Particules organiques */
+.organic-particles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.particle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: radial-gradient(circle, rgba(162, 89, 255, 0.6) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* Effet néon */
+.neon-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.neon-effect::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: inherit;
+  filter: blur(8px);
+  opacity: 0.7;
+  z-index: -1;
+}
+
+/* Animations de micro-interactions */
+@keyframes organicPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes organicFloat {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes organicGlow {
+  0%, 100% { 
+    box-shadow: 0 0 20px rgba(162, 89, 255, 0.3);
+  }
+  50% { 
+    box-shadow: 0 0 40px rgba(162, 89, 255, 0.6);
+  }
+}
+
+@keyframes organicRotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes organicMorph {
+  0% { border-radius: 8px; }
+  50% { border-radius: 50%; }
+  100% { border-radius: 8px; }
+}
+
+/* Classes utilitaires pour les animations organiques */
+.organic-pulse {
+  animation: organicPulse 2s ease-in-out infinite;
+}
+
+.organic-float {
+  animation: organicFloat 3s ease-in-out infinite;
+}
+
+.organic-glow {
+  animation: organicGlow 2s ease-in-out infinite;
+}
+
+.organic-rotate {
+  animation: organicRotate 10s linear infinite;
+}
+
+.organic-morph {
+  animation: organicMorph 4s ease-in-out infinite;
+}
+
+/* Effets de profondeur organiques */
+.organic-depth {
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.organic-depth:hover {
+  transform: translateZ(20px) rotateX(5deg) rotateY(5deg);
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Effets de liquide organiques */
+.organic-liquid {
+  position: relative;
+  overflow: hidden;
+}
+
+.organic-liquid::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(162, 89, 255, 0.1) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  transition: all 0.3s ease;
+  opacity: 0;
+}
+
+.organic-liquid:hover::before {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1.2);
+}
+
+/* Effets de glitch organiques */
+.organic-glitch {
+  position: relative;
+}
+
+.organic-glitch::before,
+.organic-glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}
+
+.organic-glitch::before {
+  animation: glitch-1 0.3s infinite;
+  color: #ff0000;
+  z-index: -1;
+}
+
+.organic-glitch::after {
+  animation: glitch-2 0.3s infinite;
+  color: #00ff00;
+  z-index: -2;
+}
+
+@keyframes glitch-1 {
+  0%, 100% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(-2px, -2px); }
+  60% { transform: translate(2px, 2px); }
+  80% { transform: translate(2px, -2px); }
+}
+
+@keyframes glitch-2 {
+  0%, 100% { transform: translate(0); }
+  20% { transform: translate(2px, -2px); }
+  40% { transform: translate(2px, 2px); }
+  60% { transform: translate(-2px, -2px); }
+  80% { transform: translate(-2px, 2px); }
+}
+
+/* Effets de transition organiques */
+.organic-transition {
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.organic-transition-fast {
+  transition: all 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.organic-transition-slow {
+  transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Effets de focus organiques */
+.organic-focus:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(162, 89, 255, 0.3);
+  transform: scale(1.02);
+  transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Effets de hover organiques */
+.organic-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Effets de pression organiques */
+.organic-press:active {
+  transform: translateY(1px) scale(0.98);
+  transition: all 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Effets de chargement organiques */
+.organic-loading {
+  position: relative;
+  overflow: hidden;
+}
+
+.organic-loading::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(162, 89, 255, 0.2),
+    transparent
+  );
+  animation: organicShimmer 1.5s infinite;
+}
+
+@keyframes organicShimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+/* Effets de parallaxe organiques */
+.organic-parallax {
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* Effets de morphing organiques */
+.organic-morphing {
+  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.organic-morphing:hover {
+  border-radius: 50%;
+  transform: scale(1.1) rotate(180deg);
+}
+
+/* Support pour les préférences de réduction de mouvement */
+@media (prefers-reduced-motion: reduce) {
+  .organic-pulse,
+  .organic-float,
+  .organic-glow,
+  .organic-rotate,
+  .organic-morph,
+  .organic-loading::before {
+    animation: none;
+  }
+  
+  .organic-transition,
+  .organic-transition-fast,
+  .organic-transition-slow {
+    transition: none;
+  }
+  
+  .organic-hover:hover,
+  .organic-focus:focus,
+  .organic-press:active {
+    transform: none;
+  }
+}
+
+/* Effets de profondeur pour les écrans haute densité */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .particle {
+    width: 1px;
+    height: 1px;
+  }
+}
+
+/* Support pour le mode sombre système */
+@media (prefers-color-scheme: dark) {
+  .organic-liquid::before {
+    background: radial-gradient(circle, rgba(162, 89, 255, 0.15) 0%, transparent 70%);
+  }
+}
+
+/* Styles pour les nouveaux composants d'animation */
+
+/* Particules d'arrière-plan */
+.background-particles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.background-particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: radial-gradient(circle, rgba(162, 89, 255, 0.4) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* Indicateur de scroll */
+.scroll-indicator {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, #a259ff, #3f2b96);
+  z-index: 9999;
+  transform-origin: left;
+}
+
+/* Transitions de route */
+.route-transition {
+  width: 100%;
+  height: 100%;
+}
+
+/* Notifications organiques */
+.organic-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 15px 20px;
+  border-radius: 12px;
+  background: rgba(28, 28, 42, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  z-index: 10000;
+  max-width: 300px;
+  color: #fff;
+}
+
+.organic-notification.success {
+  border-left: 4px solid #4CAF50;
+}
+
+.organic-notification.error {
+  border-left: 4px solid #f44336;
+}
+
+.organic-notification.warning {
+  border-left: 4px solid #FF9800;
+}
+
+.organic-notification.info {
+  border-left: 4px solid #2196F3;
+}
+
+/* Loader organique */
+.organic-loader {
+  display: inline-block;
+  border-radius: 50%;
+  border: 3px solid rgba(162, 89, 255, 0.2);
+  border-top: 3px solid #a259ff;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Anneau de focus */
+.focus-ring {
+  transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Effet de hover */
+.hover-effect {
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Élément de morphing */
+.morphing-element {
+  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Conteneur de parallaxe */
+.parallax-container {
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+/* Responsive design pour les animations */
+@media (max-width: 768px) {
+  .background-particle {
+    width: 2px;
+    height: 2px;
+  }
+  
+  .organic-notification {
+    right: 10px;
+    left: 10px;
+    max-width: none;
+  }
+  
+  .scroll-indicator {
+    height: 2px;
+  }
+}
+
+/* Optimisations pour les écrans haute densité */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .background-particle {
+    width: 1px;
+    height: 1px;
+  }
+  
+  .scroll-indicator {
+    height: 1px;
+  }
+}
+
+/* Support pour les préférences de réduction de mouvement */
+@media (prefers-reduced-motion: reduce) {
+  .organic-loader {
+    animation: none;
+  }
+  
+  .background-particle {
+    animation: none;
+  }
+  
+  .route-transition {
+    transition: none;
+  }
+} 

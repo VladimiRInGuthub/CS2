@@ -1,41 +1,104 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import '../style.css';
+import DarkVeil from '../components/DarkVeil';
+// Styles intégrés dans le composant
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // Utiliser la fonction logout du fichier auth.js qui gère les sessions
+    window.location.href = '/login';
+  };
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    axios.get('http://localhost:5000/api/users/me', {
-      headers: { Authorization: `Bearer ${token}` }
-    })
+    axios.get('http://localhost:5000/api/users/me')
       .then(res => setUser(res.data))
       .catch(err => console.error(err));
   }, []);
 
   if (!user) {
-    return <p style={{ color: '#fff', textAlign: 'center' }}>Chargement...</p>;
+    return (
+      <div style={{
+        position: 'relative',
+        minHeight: '100vh',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}>
+        {/* Fond animé DarkVeil */}
+        <div style={{ 
+          position: 'absolute', 
+          top: 0, 
+          left: 0, 
+          width: '100%', 
+          height: '100%', 
+          zIndex: -1 
+        }}>
+          <DarkVeil 
+            hueShift={180}
+            noiseIntensity={0.05}
+            scanlineIntensity={0.03}
+            speed={0.2}
+            scanlineFrequency={0.005}
+            warpAmount={0.1}
+          />
+        </div>
+        <p style={{ 
+          color: '#fff', 
+          textAlign: 'center', 
+          backgroundColor: 'rgba(15, 15, 15, 0.8)',
+          padding: '20px',
+          borderRadius: '8px',
+          backdropFilter: 'blur(10px)'
+        }}>
+          Chargement...
+        </p>
+      </div>
+    );
   }
 
   return (
     <div style={{
-      backgroundColor: '#0f0f0f',
+      position: 'relative',
       minHeight: '100vh',
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
       padding: '30px'
     }}>
+      {/* Fond animé DarkVeil */}
+      <div style={{ 
+        position: 'absolute', 
+        top: 0, 
+        left: 0, 
+        width: '100%', 
+        height: '100%', 
+        zIndex: -1 
+      }}>
+        <DarkVeil 
+          hueShift={180}
+          noiseIntensity={0.05}
+          scanlineIntensity={0.03}
+          speed={0.2}
+          scanlineFrequency={0.005}
+          warpAmount={0.1}
+        />
+      </div>
+
       <div style={{
-        backgroundColor: '#1c1c2a',
+        backgroundColor: 'rgba(28, 28, 42, 0.9)',
         color: 'white',
         borderRadius: '12px',
         padding: '30px',
         width: '100%',
         maxWidth: '420px',
         textAlign: 'center',
-        boxShadow: '0 0 20px rgba(255,255,255,0.05)'
+        boxShadow: '0 0 20px rgba(255,255,255,0.05)',
+        backdropFilter: 'blur(15px)',
+        border: '1px solid rgba(255, 255, 255, 0.1)'
       }}>
         <img
           src={user.avatar}
@@ -46,17 +109,24 @@ const Dashboard = () => {
         <p style={{ marginBottom: '20px' }}>💰 Coins : {user.coins}</p>
 
         <button
-          onClick={() => alert("(🔜 bientôt) Interface d'ouverture de caisse")}
+          onClick={() => navigate('/cases')}
           style={buttonStyle}
         >
-          🎁 Ouvrir une caisse
+          🎁 Ouvrir des cases
         </button>
 
         <button
-          onClick={() => alert("(🔜 bientôt) Interface d'inventaire")}
+          onClick={() => navigate('/inventory')}
           style={{ ...buttonStyle, backgroundColor: '#555', marginTop: '12px' }}
         >
           🎒 Voir mon inventaire
+        </button>
+
+        <button
+          onClick={handleLogout}
+          style={{ ...buttonStyle, backgroundColor: '#dc3545', marginTop: '12px' }}
+        >
+          🚪 Se déconnecter
         </button>
       </div>
     </div>

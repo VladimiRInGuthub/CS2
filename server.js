@@ -12,17 +12,39 @@ require('./config/passport');
 const app = express();
 connectDB();
 
-app.use(cors());
+// Vérification des variables d'environnement critiques
+const requiredEnv = ['JWT_SECRET', 'STEAM_API_KEY'];
+const missingEnv = requiredEnv.filter((key) => !process.env[key]);
+if (missingEnv.length > 0) {
+  console.error(`Erreur: Variables d'environnement manquantes: ${missingEnv.join(', ')}`);
+  process.exit(1);
+}
+
 app.use(bodyParser.json());
 
 app.use(session({
     secret: 'super-secret',
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: true,
+    cookie: {
+      secure: false, // Mettre à true en production avec HTTPS
+      httpOnly: true,
+      sameSite: 'lax'
+    }
   }));
+
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Cookie'],
+  exposedHeaders: ['Set-Cookie']
+}));
   app.use(passport.initialize());
   app.use(passport.session());
   
+
+
 // Routes
 app.use('/auth', require('./routes/auth'));
 app.use('/api/cases', require('./routes/cases'));

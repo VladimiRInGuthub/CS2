@@ -1,90 +1,114 @@
 import React, { useState } from 'react';
-import '../style.css'; // Assure-toi que ce fichier existe dans src/
+import GlassSurface from '../components/GlassSurface';
+import './Login.css';
 
 const Login = () => {
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [ageConfirmed, setAgeConfirmed] = useState(false);
-
   const canConnect = termsAccepted && ageConfirmed;
 
   return (
-    <div style={{
-      backgroundColor: '#0f0f0f',
-      minHeight: '100vh',
-      color: 'white',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '40px'
-    }}>
-      <h1 style={{ fontSize: '2.5rem', marginBottom: '10px' }}>CS2 DROP</h1>
-      <p style={{ fontSize: '1rem', marginBottom: '30px', textAlign: 'center' }}>
-        Rejoignez-nous pour débloquer des fonctionnalités exclusives et commencez votre aventure avec nous !
-      </p>
+    <div className="login-page">
+      <div className="login-container">
+        <GlassSurface 
+          variant="card" 
+          className="login-card"
+          brightness="55%"
+          saturation="1.05"
+          redOffset="0px"
+          greenOffset="10px"
+          blueOffset="20px"
+          rotateX="1deg"
+          rotateY="0.5deg"
+          translateZ="3px"
+        >
+          <div className="login-header">
+            <h1 className="login-title">CS2 DROP</h1>
+            <p className="login-subtitle">
+              Rejoignez-nous pour débloquer des fonctionnalités exclusives et commencez votre aventure avec nous !
+            </p>
+          </div>
 
-      <button
-        disabled={!canConnect}
-        onClick={() => window.location.href = 'http://localhost:5000/auth/steam'}
-        style={{
-          backgroundColor: canConnect ? '#FF6A00' : '#555',
-          color: '#fff',
-          padding: '14px 28px',
-          fontSize: '1rem',
-          border: 'none',
-          borderRadius: '6px',
-          cursor: canConnect ? 'pointer' : 'not-allowed',
-          marginBottom: '20px',
-          width: '100%',
-          maxWidth: '400px'
-        }}
-      >
-        🔗 Connectez-vous avec Steam
-      </button>
+          <div className="login-actions">
+            <GlassSurface 
+              variant="button" 
+              className={`steam-btn ${canConnect ? 'enabled' : 'disabled'}`}
+              brightness={canConnect ? "70%" : "40%"}
+              saturation={canConnect ? "1.2" : "0.8"}
+              scale={canConnect ? "1.05" : "1"}
+              redOffset="15px"
+              greenOffset="25px"
+              blueOffset="35px"
+              onClick={() => {
+                if (canConnect) {
+                  window.location.href = 'http://localhost:5000/auth/steam';
+                }
+              }}
+            >
+              🔗 Connectez-vous avec Steam
+            </GlassSurface>
 
-      <p style={{ marginBottom: '10px' }}>Ou connectez-vous avec un compte social</p>
+            <p className="social-label">Ou connectez-vous avec un compte social</p>
+            
+            <div className="social-buttons">
+              <GlassSurface 
+                variant="button" 
+                className="social-btn"
+                brightness="60%"
+                saturation="1.1"
+                redOffset="10px"
+                greenOffset="20px"
+                blueOffset="30px"
+                onClick={() => window.location.href = 'http://localhost:5000/auth/google'}
+              >
+                G
+              </GlassSurface>
+              <GlassSurface 
+                variant="button" 
+                className="social-btn disabled"
+                brightness="30%"
+                saturation="0.7"
+                disabled
+              >
+                ✈️
+              </GlassSurface>
+            </div>
+          </div>
 
-      <div style={{ display: 'flex', gap: '20px', marginBottom: '30px' }}>
-        <button onClick={() => window.location.href = 'http://localhost:5000/auth/google'} style={socialBtnStyle}>G</button>
-        <button disabled style={socialBtnStyle}>✈️</button>
-      </div>
-
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '10px',
-        textAlign: 'left',
-        maxWidth: '400px',
-        width: '100%'
-      }}>
-        <label style={checkboxStyle}>
-          <input type="checkbox" onChange={(e) => setTermsAccepted(e.target.checked)} />
-          J'accepte les <a href="#">Conditions de service</a> et <a href="#">la politique de confidentialité</a>
-        </label>
-        <label style={checkboxStyle}>
-          <input type="checkbox" onChange={(e) => setAgeConfirmed(e.target.checked)} />
-          J’ai 18 ans ou plus
-        </label>
+          <div className="login-terms">
+            <label className="checkbox-label">
+              <input 
+                type="checkbox" 
+                onChange={(e) => setTermsAccepted(e.target.checked)}
+                className="checkbox-input"
+              />
+              <span className="checkbox-text">
+                J'accepte les{' '}
+                <button type="button" className="link-btn">
+                  Conditions de service
+                </button>{' '}
+                et{' '}
+                <button type="button" className="link-btn">
+                  la politique de confidentialité
+                </button>
+              </span>
+            </label>
+            
+            <label className="checkbox-label">
+              <input 
+                type="checkbox" 
+                onChange={(e) => setAgeConfirmed(e.target.checked)}
+                className="checkbox-input"
+              />
+              <span className="checkbox-text">
+                J'ai 18 ans ou plus
+              </span>
+            </label>
+          </div>
+        </GlassSurface>
       </div>
     </div>
   );
-};
-
-const socialBtnStyle = {
-  backgroundColor: '#222',
-  color: '#fff',
-  fontSize: '1.2rem',
-  padding: '10px 18px',
-  border: '1px solid #555',
-  borderRadius: '4px',
-  cursor: 'pointer'
-};
-
-const checkboxStyle = {
-  fontSize: '0.9rem',
-  display: 'flex',
-  alignItems: 'center',
-  gap: '8px'
 };
 
 export default Login;
