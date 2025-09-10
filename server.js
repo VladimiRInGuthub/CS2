@@ -20,6 +20,14 @@ if (missingEnv.length > 0) {
   process.exit(1);
 }
 
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Cookie'],
+  exposedHeaders: ['Set-Cookie']
+}));
+
 app.use(bodyParser.json());
 
 app.use(session({
@@ -33,13 +41,6 @@ app.use(session({
     }
   }));
 
-app.use(cors({
-  origin: 'http://localhost:3000',
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Cookie'],
-  exposedHeaders: ['Set-Cookie']
-}));
   app.use(passport.initialize());
   app.use(passport.session());
   

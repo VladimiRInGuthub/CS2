@@ -56,7 +56,7 @@ const GlassSurface = ({
         <rect x="0" y="0" width="${actualWidth}" height="${actualHeight}" fill="black"></rect>
         <rect x="0" y="0" width="${actualWidth}" height="${actualHeight}" rx="${borderRadius}" fill="url(#${redGradId})" />
         <rect x="0" y="0" width="${actualWidth}" height="${actualHeight}" rx="${borderRadius}" fill="url(#${blueGradId})" style="mix-blend-mode: ${mixBlendMode}" />
-        <rect x="${edgeSize}" y="${edgeSize}" width="${actualWidth - edgeSize * 2}" height="${actualHeight - edgeSize * 2}" rx="${borderRadius}" fill="hsl(0 0% ${brightness}% / ${opacity})" style="filter:blur(${blur}px)" />
+        <rect x="${edgeSize}" y="${edgeSize}" width="${actualWidth - edgeSize * 2}" height="${actualHeight - edgeSize * 2}" rx="${borderRadius}" fill="hsl(0 0% ${brightness}% / ${opacity})" />
       </svg>
     `;
 
@@ -75,9 +75,11 @@ const GlassSurface = ({
       { ref: blueChannelRef, offset: blueOffset },
     ].forEach(({ ref, offset }) => {
       if (ref.current) {
+        // Convert offset to number if it's a string with 'px'
+        const offsetValue = typeof offset === 'string' ? parseFloat(offset) : offset;
         ref.current.setAttribute(
           "scale",
-          (distortionScale + offset).toString()
+          (distortionScale + offsetValue).toString()
         );
         ref.current.setAttribute("xChannelSelector", xChannel);
         ref.current.setAttribute("yChannelSelector", yChannel);
