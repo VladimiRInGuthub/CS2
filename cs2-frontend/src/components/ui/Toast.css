@@ -1,0 +1,217 @@
+/* Toast Component Styles */
+.toast-container {
+  position: fixed;
+  z-index: var(--z-toast);
+  pointer-events: none;
+}
+
+.toast-container-top-right {
+  top: var(--spacing-6);
+  right: var(--spacing-6);
+}
+
+.toast-container-top-left {
+  top: var(--spacing-6);
+  left: var(--spacing-6);
+}
+
+.toast-container-bottom-right {
+  bottom: var(--spacing-6);
+  right: var(--spacing-6);
+}
+
+.toast-container-bottom-left {
+  bottom: var(--spacing-6);
+  left: var(--spacing-6);
+}
+
+.toast-container-top-center {
+  top: var(--spacing-6);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.toast-container-bottom-center {
+  bottom: var(--spacing-6);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.toast {
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-xl);
+  backdrop-filter: var(--blur-lg);
+  margin-bottom: var(--spacing-3);
+  min-width: 300px;
+  max-width: 400px;
+  position: relative;
+  overflow: hidden;
+  pointer-events: auto;
+}
+
+.toast::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, 
+    rgba(162, 89, 255, 0.05), 
+    rgba(63, 43, 150, 0.05)
+  );
+  pointer-events: none;
+}
+
+/* Toast variants */
+.toast-success {
+  border-color: var(--color-success);
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.toast-success::before {
+  background: linear-gradient(135deg, 
+    rgba(16, 185, 129, 0.1), 
+    rgba(5, 150, 105, 0.1)
+  );
+}
+
+.toast-error {
+  border-color: var(--color-error);
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+}
+
+.toast-error::before {
+  background: linear-gradient(135deg, 
+    rgba(239, 68, 68, 0.1), 
+    rgba(220, 38, 38, 0.1)
+  );
+}
+
+.toast-warning {
+  border-color: var(--color-warning);
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+}
+
+.toast-warning::before {
+  background: linear-gradient(135deg, 
+    rgba(245, 158, 11, 0.1), 
+    rgba(217, 119, 6, 0.1)
+  );
+}
+
+.toast-info {
+  border-color: var(--color-info);
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+.toast-info::before {
+  background: linear-gradient(135deg, 
+    rgba(59, 130, 246, 0.1), 
+    rgba(37, 99, 235, 0.1)
+  );
+}
+
+/* Toast content */
+.toast-content {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  padding: var(--spacing-4);
+  position: relative;
+  z-index: 1;
+}
+
+.toast-icon {
+  font-size: var(--font-size-lg);
+  flex-shrink: 0;
+}
+
+.toast-message {
+  color: var(--color-white);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+  flex: 1;
+}
+
+.toast-close {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--color-white);
+  width: 24px;
+  height: 24px;
+  border-radius: var(--border-radius-full);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-xs);
+  transition: all var(--transition-normal);
+  flex-shrink: 0;
+}
+
+.toast-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+/* Progress bar */
+.toast-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: var(--color-primary-400);
+  border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
+}
+
+.toast-success .toast-progress {
+  background: var(--color-success);
+}
+
+.toast-error .toast-progress {
+  background: var(--color-error);
+}
+
+.toast-warning .toast-progress {
+  background: var(--color-warning);
+}
+
+.toast-info .toast-progress {
+  background: var(--color-info);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .toast-container-top-right,
+  .toast-container-top-left,
+  .toast-container-bottom-right,
+  .toast-container-bottom-left {
+    left: var(--spacing-4);
+    right: var(--spacing-4);
+  }
+  
+  .toast {
+    min-width: auto;
+    max-width: none;
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .toast-container {
+    left: var(--spacing-2) !important;
+    right: var(--spacing-2) !important;
+    transform: none !important;
+  }
+  
+  .toast-content {
+    padding: var(--spacing-3);
+  }
+  
+  .toast-message {
+    font-size: var(--font-size-xs);
+  }
+}

@@ -111,8 +111,10 @@ export const getWorkingSkinImageUrl = (skin) => {
   return generateFallbackSkinImage(skin);
 };
 
-export default {
+const skinImageUtils = {
   WORKING_SKIN_IMAGES,
   generateFallbackSkinImage,
   getWorkingSkinImageUrl
 };
+
+export default skinImageUtils;

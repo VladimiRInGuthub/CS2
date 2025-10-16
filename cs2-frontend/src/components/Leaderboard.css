@@ -1,0 +1,394 @@
+.leaderboard-container {
+  padding: 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.leaderboard-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(162, 89, 255, 0.3);
+  border-top: 3px solid #a259ff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.leaderboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.leaderboard-header h1 {
+  color: #fff;
+  font-size: 2.5rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.leaderboard-filters {
+  display: flex;
+  gap: 20px;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filter-group label {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.filter-group select {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: #fff;
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  min-width: 120px;
+}
+
+.filter-group select:focus {
+  outline: none;
+  border-color: #a259ff;
+  box-shadow: 0 0 0 2px rgba(162, 89, 255, 0.2);
+}
+
+.leaderboard-content {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.leaderboard-list {
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.leaderboard-item {
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.leaderboard-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.leaderboard-item:last-child {
+  border-bottom: none;
+}
+
+.leaderboard-item.top-three {
+  background: linear-gradient(90deg, rgba(255, 193, 7, 0.1), rgba(255, 152, 0, 0.1));
+  border-color: rgba(255, 193, 7, 0.3);
+}
+
+.leaderboard-item.top-ten {
+  background: rgba(162, 89, 255, 0.05);
+  border-color: rgba(162, 89, 255, 0.2);
+}
+
+.rank {
+  width: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.rank-icon {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.leaderboard-item.top-three .rank-icon {
+  font-size: 2rem;
+}
+
+.player-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex: 1;
+  min-width: 0;
+}
+
+.player-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 2px solid rgba(162, 89, 255, 0.3);
+  flex-shrink: 0;
+}
+
+.player-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.player-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.player-name {
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.player-level {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+}
+
+.player-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-right: 20px;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stat-label {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.stat-value {
+  color: #a259ff;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.player-badges {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.badge {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.badge.top-player {
+  background: linear-gradient(45deg, #ffc107, #ff8f00);
+  color: #000;
+}
+
+.badge.case-master {
+  background: linear-gradient(45deg, #a259ff, #3f2b96);
+  color: #fff;
+}
+
+.badge.skin-collector {
+  background: linear-gradient(45deg, #28a745, #20c997);
+  color: #fff;
+}
+
+.no-data {
+  text-align: center;
+  padding: 60px 20px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.no-data-icon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+  opacity: 0.5;
+}
+
+.leaderboard-footer {
+  text-align: center;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.leaderboard-footer p {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+/* Scrollbar styling */
+.leaderboard-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.leaderboard-list::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.leaderboard-list::-webkit-scrollbar-thumb {
+  background: rgba(162, 89, 255, 0.5);
+  border-radius: 3px;
+}
+
+.leaderboard-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(162, 89, 255, 0.7);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .leaderboard-container {
+    padding: 15px;
+  }
+  
+  .leaderboard-header {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+  
+  .leaderboard-header h1 {
+    font-size: 2rem;
+  }
+  
+  .leaderboard-filters {
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+  }
+  
+  .filter-group select {
+    min-width: 100%;
+  }
+  
+  .leaderboard-item {
+    padding: 12px 15px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .rank {
+    width: 40px;
+  }
+  
+  .rank-icon {
+    font-size: 1.2rem;
+  }
+  
+  .leaderboard-item.top-three .rank-icon {
+    font-size: 1.5rem;
+  }
+  
+  .player-info {
+    gap: 10px;
+    flex: 1;
+    min-width: 200px;
+  }
+  
+  .player-avatar {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .player-name {
+    font-size: 1rem;
+  }
+  
+  .player-level {
+    font-size: 0.85rem;
+  }
+  
+  .player-stats {
+    margin-right: 0;
+    flex-direction: row;
+    gap: 15px;
+  }
+  
+  .stat-item {
+    flex-direction: column;
+    gap: 2px;
+    text-align: center;
+  }
+  
+  .stat-label {
+    font-size: 0.75rem;
+  }
+  
+  .stat-value {
+    font-size: 0.85rem;
+  }
+  
+  .player-badges {
+    gap: 5px;
+  }
+  
+  .badge {
+    width: 28px;
+    height: 28px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .leaderboard-container {
+    padding: 10px;
+  }
+  
+  .leaderboard-header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .leaderboard-item {
+    padding: 10px 12px;
+  }
+  
+  .player-info {
+    min-width: 150px;
+  }
+  
+  .player-stats {
+    gap: 10px;
+  }
+}

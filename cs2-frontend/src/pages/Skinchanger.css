@@ -1,0 +1,579 @@
+/* Skinchanger Page Styles */
+.skinchanger-page {
+  min-height: 100vh;
+  padding: 20px;
+  background: linear-gradient(135deg, #0f0f23, #1a1a2e);
+  color: #fff;
+}
+
+.skinchanger-loading {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  gap: 20px;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 3px solid rgba(162, 89, 255, 0.3);
+  border-top: 3px solid #a259ff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Header */
+.skinchanger-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.skinchanger-header h1 {
+  font-size: 3rem;
+  margin-bottom: 10px;
+  background: linear-gradient(90deg, #a259ff, #3f2b96);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 0 30px rgba(162, 89, 255, 0.5);
+}
+
+.skinchanger-header p {
+  font-size: 1.2rem;
+  color: #cfcfff;
+  margin-bottom: 20px;
+}
+
+.sync-btn {
+  background: linear-gradient(90deg, #4CAF50, #45a049);
+  color: #fff;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 25px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+}
+
+.sync-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.6);
+}
+
+/* Content */
+.skinchanger-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Weapon Slots */
+.weapon-slots {
+  background: rgba(28, 28, 42, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  padding: 25px;
+  backdrop-filter: blur(15px);
+}
+
+.weapon-slots h2 {
+  color: #a259ff;
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.slots-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 15px;
+}
+
+.weapon-slot {
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 15px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.weapon-slot:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(162, 89, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.weapon-slot.selected {
+  background: rgba(162, 89, 255, 0.2);
+  border-color: #a259ff;
+  box-shadow: 0 4px 15px rgba(162, 89, 255, 0.3);
+}
+
+.weapon-icon {
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+
+.weapon-name {
+  font-size: 0.9rem;
+  color: #cfcfff;
+  font-weight: 500;
+}
+
+.equipped-indicator {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: #4CAF50;
+  color: #fff;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+/* Weapon Skins */
+.weapon-skins {
+  background: rgba(28, 28, 42, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  padding: 25px;
+  backdrop-filter: blur(15px);
+}
+
+.weapon-skins h3 {
+  color: #a259ff;
+  font-size: 1.3rem;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.skins-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.skin-item {
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.skin-item:hover {
+  border-color: rgba(162, 89, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.skin-item.equipped {
+  border-color: #4CAF50;
+  background: rgba(76, 175, 80, 0.1);
+}
+
+.skin-image {
+  position: relative;
+  height: 120px;
+  overflow: hidden;
+}
+
+.skin-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.rarity-border {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 2px solid;
+  border-radius: 12px;
+}
+
+.skin-info {
+  padding: 10px;
+}
+
+.skin-info h4 {
+  color: #fff;
+  font-size: 0.9rem;
+  margin: 0 0 5px 0;
+}
+
+.skin-rarity {
+  font-size: 0.8rem;
+  font-weight: bold;
+  margin: 2px 0;
+  text-shadow: 0 0 10px currentColor;
+}
+
+.skin-wear {
+  color: #888;
+  font-size: 0.7rem;
+  margin: 2px 0;
+}
+
+.skin-actions {
+  padding: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.equip-btn,
+.unequip-btn {
+  width: 100%;
+  background: linear-gradient(90deg, #a259ff, #3f2b96);
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.unequip-btn {
+  background: linear-gradient(90deg, #f44336, #d32f2f);
+}
+
+.equip-btn:hover,
+.unequip-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(162, 89, 255, 0.3);
+}
+
+.no-skins {
+  text-align: center;
+  padding: 40px 20px;
+  color: #888;
+}
+
+/* Loadouts */
+.loadouts-section {
+  grid-column: 1 / -1;
+  background: rgba(28, 28, 42, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  padding: 25px;
+  backdrop-filter: blur(15px);
+}
+
+.loadouts-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.loadouts-header h2 {
+  color: #a259ff;
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+.save-loadout-btn {
+  background: linear-gradient(90deg, #a259ff, #3f2b96);
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(162, 89, 255, 0.4);
+}
+
+.save-loadout-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(162, 89, 255, 0.6);
+}
+
+.loadouts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.loadout-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.loadout-card:hover {
+  border-color: rgba(162, 89, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.loadout-card.selected {
+  border-color: #a259ff;
+  background: rgba(162, 89, 255, 0.1);
+}
+
+.loadout-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.loadout-type {
+  font-size: 1.5rem;
+}
+
+.loadout-header h3 {
+  color: #fff;
+  font-size: 1.1rem;
+  margin: 0;
+  flex: 1;
+}
+
+.loadout-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.load-btn,
+.delete-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.load-btn:hover {
+  background: rgba(76, 175, 80, 0.3);
+  border-color: #4CAF50;
+}
+
+.delete-btn:hover {
+  background: rgba(244, 67, 54, 0.3);
+  border-color: #f44336;
+}
+
+.loadout-skins {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.loadout-skin {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+}
+
+.loadout-skin img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+/* Loadout Modal */
+.loadout-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+.loadout-modal {
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  border: 2px solid rgba(162, 89, 255, 0.3);
+  border-radius: 20px;
+  padding: 30px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+}
+
+.loadout-modal h3 {
+  color: #a259ff;
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.modal-content {
+  margin-bottom: 25px;
+}
+
+.input-group {
+  margin-bottom: 20px;
+}
+
+.input-group label {
+  display: block;
+  color: #cfcfff;
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+}
+
+.input-group input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 12px;
+  color: #fff;
+  font-size: 1rem;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: #a259ff;
+  box-shadow: 0 0 10px rgba(162, 89, 255, 0.3);
+}
+
+.loadout-types {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.loadout-type-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.loadout-type-btn:hover {
+  background: rgba(162, 89, 255, 0.2);
+  border-color: #a259ff;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: center;
+}
+
+.cancel-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cancel-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .skinchanger-content {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .skinchanger-page {
+    padding: 15px;
+  }
+  
+  .skinchanger-header h1 {
+    font-size: 2rem;
+  }
+  
+  .slots-grid {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  }
+  
+  .skins-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+  
+  .loadouts-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .loadout-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .loadout-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .loadout-types {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .skinchanger-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .weapon-slots,
+  .weapon-skins,
+  .loadouts-section {
+    padding: 15px;
+  }
+  
+  .slots-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .skins-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .loadout-modal {
+    padding: 20px;
+  }
+}

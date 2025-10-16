@@ -11,6 +11,13 @@ const connectDB = require('./config/db');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const passport = require('passport');
+const {
+  smartCacheMiddleware,
+  inputValidationMiddleware,
+  performanceMiddleware,
+  errorHandler,
+  maintenanceMiddleware
+} = require('./middleware/performance');
 require('./config/passport');
 
 
@@ -19,11 +26,24 @@ const app = express();
 connectDB();
 
 // Vérification des variables d'environnement critiques
-const requiredEnv = ['SESSION_SECRET'];
+const requiredEnv = ['SESSION_SECRET', 'MONGODB_URI', 'FRONTEND_URL', 'BACKEND_URL'];
 const missingEnv = requiredEnv.filter((key) => !process.env[key]);
 if (missingEnv.length > 0) {
-  console.warn(`Attention: ${missingEnv.join(', ')} manquante(s). Valeur de développement appliquée.`);
+  console.warn(`⚠️  Variables d'environnement manquantes: ${missingEnv.join(', ')}`);
+  console.warn('📝 Consultez env.example pour la configuration complète');
+  
+  // Valeurs de développement par défaut
   process.env.SESSION_SECRET = process.env.SESSION_SECRET || 'dev_secret_change_me';
+  process.env.MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/skincase';
+  process.env.FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
+  process.env.BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:5000';
+}
+
+// Validation des clés API optionnelles
+const optionalApiKeys = ['STEAM_API_KEY', 'GOOGLE_CLIENT_ID', 'STRIPE_SECRET_KEY', 'CSGOSKINS_API_KEY'];
+const missingApiKeys = optionalApiKeys.filter((key) => !process.env[key]);
+if (missingApiKeys.length > 0) {
+  console.warn(`🔑 Clés API manquantes (fonctionnalités limitées): ${missingApiKeys.join(', ')}`);
 }
 
 const config = require('./config/config');
@@ -121,11 +141,48 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Middlewares d'optimisation et de sécurité
+app.use(maintenanceMiddleware);
+app.use(performanceMiddleware);
+app.use(inputValidationMiddleware);
+app.use(smartCacheMiddleware(300)); // Cache de 5 minutes par défaut
   
 
 
+// Health check
+app.get('/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'OK', 
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    memory: process.memoryUsage(),
+    version: process.env.npm_package_version || '1.0.0'
+  });
+});
+
+// Redirection vers le frontend pour les routes de pages
+app.get('/login', (req, res) => {
+  res.redirect(`${config.FRONTEND_URL}/login`);
+});
+
+app.get('/dashboard', (req, res) => {
+  res.redirect(`${config.FRONTEND_URL}/dashboard`);
+});
+
+app.get('/cases', (req, res) => {
+  res.redirect(`${config.FRONTEND_URL}/cases`);
+});
+
+app.get('/inventory', (req, res) => {
+  res.redirect(`${config.FRONTEND_URL}/inventory`);
+});
+
 // Routes
 app.use('/auth', require('./routes/auth'));
+app.use('/auth/email', require('./routes/authEmail'));
+app.use('/api/xcoins', require('./routes/xcoins'));
+app.use('/api/payment', require('./routes/payment'));
 app.use('/api/cases', require('./routes/cases'));
 app.use('/api/inventory', require('./routes/inventory'));
 app.use('/api/users', require('./routes/user'));
@@ -133,6 +190,12 @@ app.use('/api/rooms', require('./routes/room'));
 app.use('/api/shop', require('./routes/shop'));
 app.use('/api/skinchanger', require('./routes/skinchanger'));
 app.use('/api/skins', require('./routes/skins'));
+app.use('/api/servers', require('./routes/servers'));
+app.use('/api/notifications', require('./routes/notifications'));
+app.use('/api/stats', require('./routes/stats'));
+app.use('/api/achievements', require('./routes/achievements'));
+app.use('/api/battlepass', require('./routes/battlepass'));
+app.use('/api/premium', require('./routes/premium'));
 app.use('/api/admin', require('./routes/admin'));
 
 // Not found handler
@@ -141,15 +204,16 @@ app.use((req, res, next) => {
 });
 
 // Global error handler
-// eslint-disable-next-line no-unused-vars
-app.use((err, req, res, next) => {
-  console.error('Global error:', err);
-  res.status(err.status || 500).json({
-    message: err.message || 'Erreur serveur',
-    code: err.code || 'SERVER_ERROR'
-  });
-});
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+  
+  // Démarrer le service de nettoyage des serveurs
+  if (process.env.NODE_ENV === 'production') {
+    const serverCleanup = require('./utils/serverCleanup');
+    serverCleanup.start();
+  }
+});
 

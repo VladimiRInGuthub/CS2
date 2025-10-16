@@ -1,288 +1,290 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import DarkVeil from '../components/DarkVeil';
-import CoinIcon from '../components/CoinIcon';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import CaseOpening from '../components/CaseOpening';
-import CaseHistory from '../components/CaseHistory';
-import { useInventory } from '../hooks/useInventory';
-// Styles intégrés dans le composant
+import { API_CONFIG } from '../config/apiConfig';
+import './Cases.css';
 
 const Cases = () => {
+  const { t } = useTranslation();
   const [cases, setCases] = useState([]);
-  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [showCaseOpening, setShowCaseOpening] = useState(false);
-  const [showHistory, setShowHistory] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedCase, setSelectedCase] = useState(null);
-  const navigate = useNavigate();
-  const { refreshInventory } = useInventory();
+  const [isOpeningCase, setIsOpeningCase] = useState(false);
+  const [user, setUser] = useState(null);
+  const [recentDrops, setRecentDrops] = useState([]);
+
+  const categories = [
+    { id: 'all', name: t('cases.allCategories'), icon: '📦' },
+    { id: 'starter', name: t('cases.starter'), icon: '🌟' },
+    { id: 'premium', name: t('cases.premium'), icon: '💎' },
+    { id: 'legendary', name: t('cases.legendary'), icon: '👑' },
+    { id: 'knife', name: t('cases.knife'), icon: '🔪' },
+    { id: 'gloves', name: t('cases.gloves'), icon: '🧤' },
+    { id: 'special', name: t('cases.special'), icon: '⭐' }
+  ];
 
   useEffect(() => {
-    const loadData = async () => {
-      try {
-        const [casesRes, userRes] = await Promise.all([
-          axios.get('/api/cases', { withCredentials: true }),
-          axios.get('/api/users/me', { withCredentials: true })
-        ]);
+    loadCases();
+    loadUser();
+    loadRecentDrops();
+  }, []);
 
-        setCases(casesRes.data);
-        setUser(userRes.data);
-      } catch (error) {
-        console.error('Erreur chargement:', error);
-        if (error.response?.status === 401) {
-          navigate('/login');
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadData();
-  }, [navigate]);
-
-  const openCase = async (caseItem) => {
+  const loadCases = async () => {
     try {
-      const response = await axios.post('/api/cases/open', 
-        { caseId: caseItem._id },
-        { withCredentials: true }
-      );
-
-      setUser(prev => ({ ...prev, coins: response.data.newBalance }));
+      const response = await fetch('/api/cases', {
+        credentials: 'include'
+      });
       
-      // Rafraîchir l'inventaire après ouverture réussie
-      if (refreshInventory) {
-        refreshInventory();
+      if (response.ok) {
+        const data = await response.json();
+        setCases(data.cases);
       }
-      
-      return response.data;
-
     } catch (error) {
-      console.error('Erreur ouverture case:', error);
-      throw error;
+      console.error('Erreur chargement cases:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleCaseClick = (caseItem) => {
-    setSelectedCase(caseItem);
-    setShowCaseOpening(true);
+  const loadUser = async () => {
+    try {
+      const response = await fetch('/auth/me', {
+        credentials: 'include'
+      });
+      
+      if (response.ok) {
+        const userData = await response.json();
+        setUser(userData);
+      }
+    } catch (error) {
+      console.error('Erreur chargement utilisateur:', error);
+    }
+  };
+
+  const loadRecentDrops = async () => {
+    try {
+      const response = await fetch('/api/cases/history/global?limit=10', {
+        credentials: 'include'
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setRecentDrops(data.recentOpens);
+      }
+    } catch (error) {
+      console.error('Erreur chargement drops récents:', error);
+    }
+  };
+
+  const filteredCases = selectedCategory === 'all' 
+    ? cases 
+    : cases.filter(caseItem => caseItem.category === selectedCategory);
+
+  const openCase = (caseData) => {
+    setSelectedCase(caseData);
+    setIsOpeningCase(true);
+  };
+
+  const closeCaseOpening = () => {
+    setIsOpeningCase(false);
+    setSelectedCase(null);
+    // Recharger les données utilisateur après ouverture
+    loadUser();
+    loadRecentDrops();
+  };
+
+  const handleCaseOpened = (result) => {
+    // L'ouverture est gérée par le composant CaseOpening
+    console.log('Case ouverte:', result);
   };
 
   const getRarityColor = (rarity) => {
     const colors = {
-      'Common': '#666666',
-      'Uncommon': '#4CAF50',
-      'Rare': '#2196F3',
-      'Epic': '#9C27B0',
-      'Legendary': '#FF9800'
+      'Common': '#b0b3b8',
+      'Uncommon': '#5e98d9',
+      'Rare': '#4b69ff',
+      'Epic': '#8847ff',
+      'Legendary': '#d32ce6'
     };
-    return colors[rarity] || '#666666';
+    return colors[rarity] || colors['Common'];
+  };
+
+  const getCategoryColor = (category) => {
+    const colors = {
+      'starter': '#4CAF50',
+      'premium': '#2196F3',
+      'legendary': '#FF9800',
+      'knife': '#F44336',
+      'gloves': '#9C27B0',
+      'special': '#FF5722'
+    };
+    return colors[category] || '#666';
   };
 
   if (loading) {
     return (
-      <div style={{ position: 'relative', minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1 }}>
-          <DarkVeil hueShift={180} noiseIntensity={0.05} scanlineIntensity={0.03} speed={0.2} />
-        </div>
-        <div style={{ color: '#fff', textAlign: 'center', backgroundColor: 'rgba(15, 15, 15, 0.8)', padding: '20px', borderRadius: '8px' }}>
-          Chargement des cases...
-        </div>
+      <div className="cases-loading">
+        <div className="loading-spinner"></div>
+        <p>{t('common.loading')}</p>
       </div>
     );
   }
 
   return (
-    <div style={{ position: 'relative', minHeight: '100vh', padding: '20px' }}>
-      {/* Fond animé */}
-      <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1 }}>
-        <DarkVeil hueShift={180} noiseIntensity={0.05} scanlineIntensity={0.03} speed={0.2} />
-      </div>
-
+    <div className="cases-page">
       {/* Header */}
-      <div style={{ textAlign: 'center', marginBottom: '40px', position: 'relative', zIndex: 1 }}>
-        <h1 style={{ color: '#fff', fontSize: '3rem', marginBottom: '10px', textShadow: '0 0 20px #a259ff' }}>
-          🎁 Cases
-        </h1>
+      <div className="cases-header">
+        <h1>{t('cases.title')}</h1>
+        <p>{t('cases.availableCases')}</p>
         {user && (
-          <p style={{ color: '#cfcfff', fontSize: '1.2rem', display: 'flex', gap: '8px', alignItems: 'center', justifyContent: 'center' }}>
-            <CoinIcon size={18} /> {user.coins} coins disponibles
-          </p>
+          <div className="user-balance">
+            <span className="balance-label">{t('dashboard.currentBalance')}:</span>
+            <span className="balance-amount">{user.xcoins} Xcoins</span>
+          </div>
         )}
-        
-        {/* Boutons d'action */}
-        <div style={{ display: 'flex', gap: '15px', justifyContent: 'center', marginTop: '15px', flexWrap: 'wrap' }}>
-          <button
-            onClick={() => setShowHistory(true)}
-            style={{
-              background: 'linear-gradient(90deg, #3f2b96, #a259ff)',
-              color: '#fff',
-              border: 'none',
-              padding: '12px 25px',
-              borderRadius: '25px',
-              fontSize: '1rem',
-              fontWeight: 'bold',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease',
-              boxShadow: '0 4px 15px rgba(162, 89, 255, 0.4)'
-            }}
-          >
-            📊 Voir l'historique
-          </button>
-          
-          <button
-            onClick={() => navigate('/skins')}
-            style={{
-              background: 'linear-gradient(90deg, #00ff88, #00d4aa)',
-              color: '#fff',
-              border: 'none',
-              padding: '12px 25px',
-              borderRadius: '25px',
-              fontSize: '1rem',
-              fontWeight: 'bold',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease',
-              boxShadow: '0 4px 15px rgba(0, 255, 136, 0.4)'
-            }}
-          >
-            🎨 Galerie de Skins
-          </button>
-        </div>
       </div>
 
-      {/* Cases Grid */}
-      <div style={{ 
-        display: 'grid', 
-        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
-        gap: '30px', 
-        maxWidth: '1200px', 
-        margin: '0 auto',
-        position: 'relative',
-        zIndex: 1
-      }}>
-        {cases.map((caseItem) => (
-          <div key={caseItem._id} style={{
-            backgroundColor: 'rgba(28, 28, 42, 0.9)',
-            borderRadius: '15px',
-            padding: '25px',
-            textAlign: 'center',
-            boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
-            border: '2px solid rgba(255,255,255,0.1)',
-            backdropFilter: 'blur(15px)',
-            transition: 'all 0.3s ease',
-            cursor: 'pointer',
-            opacity: 1,
-            transform: 'scale(1)'
-          }}
-          onMouseEnter={(e) => (e.target.style.transform = 'scale(1.05)')}
-          onMouseLeave={(e) => (e.target.style.transform = 'scale(1)')}
+      {/* Categories Filter */}
+      <div className="categories-filter">
+        {categories.map(category => (
+          <button
+            key={category.id}
+            className={`category-btn ${selectedCategory === category.id ? 'active' : ''}`}
+            onClick={() => setSelectedCategory(category.id)}
+            style={{
+              borderColor: selectedCategory === category.id ? getCategoryColor(category.id) : 'transparent'
+            }}
           >
-            <img 
-              src={caseItem.image} 
-              alt={caseItem.name}
-              style={{ 
-                width: '100%', 
-                height: '200px', 
-                objectFit: 'cover', 
-                borderRadius: '10px',
-                marginBottom: '20px',
-                border: `3px solid ${getRarityColor(caseItem.rarity)}`
-              }}
-            />
-            
-            <h3 style={{ color: '#fff', fontSize: '1.5rem', marginBottom: '10px' }}>
-              {caseItem.name}
-            </h3>
-            
-            <p style={{ color: '#cfcfff', marginBottom: '15px', fontSize: '0.9rem' }}>
-              {caseItem.description}
-            </p>
-            
-            <div style={{ 
-              display: 'flex', 
-              justifyContent: 'space-between', 
-              alignItems: 'center',
-              marginBottom: '20px'
-            }}>
-              <span style={{ 
-                color: getRarityColor(caseItem.rarity), 
-                fontWeight: 'bold',
-                fontSize: '0.9rem'
-              }}>
-                {caseItem.rarity}
-              </span>
-              <span style={{ color: '#FFD700', fontWeight: 'bold', fontSize: '1.1rem', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-                <CoinIcon size={16} /> {caseItem.price}
-              </span>
-            </div>
-
-            <button
-              onClick={() => handleCaseClick(caseItem)}
-              disabled={user && user.coins < caseItem.price}
-              style={{
-                background: (user && user.coins >= caseItem.price)
-                  ? 'linear-gradient(90deg, #a259ff, #3f2b96)' 
-                  : '#333',
-                color: '#fff',
-                border: 'none',
-                padding: '12px 30px',
-                borderRadius: '25px',
-                fontSize: '1rem',
-                fontWeight: 'bold',
-                cursor: (user && user.coins >= caseItem.price) ? 'pointer' : 'not-allowed',
-                width: '100%',
-                transition: 'all 0.3s ease',
-                boxShadow: (user && user.coins >= caseItem.price)
-                  ? '0 4px 15px rgba(162, 89, 255, 0.4)' 
-                  : 'none'
-              }}
-            >
-              {(user && user.coins < caseItem.price) ? '❌ Coins insuffisants' : 
-               '🎁 Ouvrir la case'}
-            </button>
-          </div>
+            <span className="category-icon">{category.icon}</span>
+            <span className="category-name">{category.name}</span>
+          </button>
         ))}
       </div>
 
-      {/* Composant d'ouverture de case */}
-      {showCaseOpening && selectedCase && (
-        <CaseOpening
-          caseItem={selectedCase}
-          onOpen={openCase}
-          onClose={() => setShowCaseOpening(false)}
-          user={user}
-        />
-      )}
+      {/* Cases Grid */}
+      <div className="cases-grid">
+        <AnimatePresence>
+          {filteredCases.map((caseItem, index) => (
+            <motion.div
+              key={caseItem._id}
+              className="case-card"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ delay: index * 0.1 }}
+              onClick={() => openCase(caseItem)}
+            >
+              <div className="case-image-container">
+                <img src={caseItem.image} alt={caseItem.name} />
+                {caseItem.isFeatured && (
+                  <div className="featured-badge">
+                    <span>⭐ {t('cases.featured')}</span>
+                  </div>
+                )}
+                <div className="case-overlay">
+                  <div className="case-price">
+                    {caseItem.price} Xcoins
+                  </div>
+                </div>
+              </div>
+              
+              <div className="case-info">
+                <h3>{caseItem.name}</h3>
+                <p className="case-description">{caseItem.shortDescription || caseItem.description}</p>
+                
+                <div className="case-stats">
+                  <div className="stat">
+                    <span className="stat-label">{t('cases.totalItems')}</span>
+                    <span className="stat-value">{caseItem.totalItems}</span>
+                  </div>
+                  <div className="stat">
+                    <span className="stat-label">{t('cases.totalOpened')}</span>
+                    <span className="stat-value">{caseItem.stats?.totalOpened || 0}</span>
+                  </div>
+                </div>
 
-      {/* Composant historique */}
-      {showHistory && (
-        <CaseHistory onClose={() => setShowHistory(false)} />
-      )}
+                <div className="case-rarity">
+                  <span 
+                    className="rarity-badge"
+                    style={{ 
+                      backgroundColor: getRarityColor(caseItem.rarity),
+                      color: '#fff'
+                    }}
+                  >
+                    {caseItem.rarity}
+                  </span>
+                </div>
+              </div>
 
-      {/* Navigation */}
-      <div style={{ 
-        position: 'fixed', 
-        bottom: '20px', 
-        left: '20px', 
-        zIndex: 10 
-      }}>
-        <button
-          onClick={() => navigate('/dashboard')}
-          style={{
-            background: 'rgba(28, 28, 42, 0.9)',
-            color: '#fff',
-            border: '1px solid rgba(255,255,255,0.2)',
-            padding: '10px 20px',
-            borderRadius: '25px',
-            cursor: 'pointer',
-            backdropFilter: 'blur(10px)'
-          }}
-        >
-          ← Retour au Dashboard
-        </button>
+              <button 
+                className="open-case-btn"
+                disabled={!user || user.xcoins < caseItem.price}
+              >
+                {!user ? t('auth.login') : 
+                 user.xcoins < caseItem.price ? t('cases.insufficientFunds') : 
+                 t('cases.openCase')}
+              </button>
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
+
+      {/* Recent Drops */}
+      {recentDrops.length > 0 && (
+        <div className="recent-drops">
+          <h2>{t('cases.recentDrops')}</h2>
+          <div className="drops-list">
+            {recentDrops.map((drop, index) => (
+              <motion.div
+                key={index}
+                className="drop-item"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <div className="drop-user">
+                  <img src={drop.user?.avatar || '/default-avatar.png'} alt={drop.user?.username} />
+                  <span>{drop.user?.username}</span>
+                </div>
+                <div className="drop-skin">
+                  <img src={drop.relatedSkin?.image} alt={drop.relatedSkin?.name} />
+                  <div className="skin-info">
+                    <span className="skin-name">{drop.relatedSkin?.name}</span>
+                    <span 
+                      className="skin-rarity"
+                      style={{ color: getRarityColor(drop.relatedSkin?.rarity) }}
+                    >
+                      {drop.relatedSkin?.rarity}
+                    </span>
+                  </div>
+                </div>
+                <div className="drop-case">
+                  <span>{drop.relatedCase?.name}</span>
+                </div>
+                <div className="drop-time">
+                  {new Date(drop.createdAt).toLocaleTimeString()}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Case Opening Modal */}
+      <AnimatePresence>
+        {isOpeningCase && selectedCase && (
+          <CaseOpening
+            caseData={selectedCase}
+            onOpen={handleCaseOpened}
+            onClose={closeCaseOpening}
+            userBalance={user?.xcoins || 0}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 };
 
-export default Cases; 
+export default Cases;

@@ -1,172 +1,192 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
-const Skin = require('../models/Skin');
 const Case = require('../models/Case');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const config = require('../config/config');
-const { body, validationResult } = require('express-validator');
+const Skin = require('../models/Skin');
+const Server = require('../models/Server');
+const Transaction = require('../models/Transaction');
+const Notification = require('../models/Notification');
+const Battlepass = require('../models/Battlepass');
+const Premium = require('../models/Premium');
+const { ensureAuthenticated, ensureAdmin } = require('../middleware/auth');
 
-// Middleware d'authentification admin
-const ensureAdmin = (req, res, next) => {
-  if (!req.user || !req.user.isAdmin) {
-    return res.status(403).json({ error: 'Accès admin requis' });
-  }
-  next();
-};
-
-// Middleware d'authentification admin par token
-const authenticateAdminToken = (req, res, next) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
-
-  if (!token) {
-    return res.status(401).json({ error: 'Token admin requis' });
-  }
-
-  jwt.verify(token, config.JWT_SECRET, async (err, decoded) => {
-    if (err) {
-      return res.status(403).json({ error: 'Token admin invalide' });
-    }
-
-    try {
-      const user = await User.findById(decoded.userId);
-      if (!user || !user.isAdmin) {
-        return res.status(403).json({ error: 'Accès admin requis' });
-      }
-      req.user = user;
-      next();
-    } catch (error) {
-      res.status(500).json({ error: 'Erreur de vérification admin' });
-    }
-  });
-};
-
-// Route de connexion admin
-router.post('/login', [
-  body('username').notEmpty().withMessage('Nom d\'utilisateur requis'),
-  body('password').notEmpty().withMessage('Mot de passe requis')
-], async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
-  const { username, password } = req.body;
-
+// @route   GET /api/admin/dashboard
+// @desc    Get admin dashboard statistics
+// @access  Private (Admin only)
+router.get('/dashboard', ensureAuthenticated, ensureAdmin, async (req, res) => {
   try {
-    const user = await User.findOne({ username }).select('+adminPassword');
-    if (!user || !user.isAdmin) {
-      return res.status(401).json({ error: 'Identifiants admin invalides' });
-    }
-
-    const isValidPassword = await bcrypt.compare(password, user.adminPassword);
-    if (!isValidPassword) {
-      return res.status(401).json({ error: 'Mot de passe admin invalide' });
-    }
-
-    const token = jwt.sign(
-      { userId: user._id, isAdmin: true },
-      config.JWT_SECRET,
-      { expiresIn: '24h' }
-    );
-
-    res.json({
-      message: 'Connexion admin réussie',
-      token,
-      user: {
-        id: user._id,
-        username: user.username,
-        avatar: user.avatar
-      }
-    });
-  } catch (error) {
-    console.error('Erreur connexion admin:', error);
-    res.status(500).json({ error: 'Erreur serveur' });
-  }
-});
-
-// Route pour créer un admin (première fois seulement)
-router.post('/setup', async (req, res) => {
-  try {
-    const adminCount = await User.countDocuments({ isAdmin: true });
-    if (adminCount > 0) {
-      return res.status(403).json({ error: 'Admin déjà configuré' });
-    }
-
-    const { username, password } = req.body;
-    if (!username || !password) {
-      return res.status(400).json({ error: 'Nom d\'utilisateur et mot de passe requis' });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 12);
-    
-    const admin = new User({
-      username,
-      adminPassword: hashedPassword,
-      isAdmin: true,
-      coins: 999999
-    });
-
-    await admin.save();
-
-    res.json({ message: 'Admin créé avec succès' });
-  } catch (error) {
-    console.error('Erreur création admin:', error);
-    res.status(500).json({ error: 'Erreur serveur' });
-  }
-});
-
-// Statistiques générales
-router.get('/stats', authenticateAdminToken, async (req, res) => {
-  try {
-    const totalUsers = await User.countDocuments();
-    const totalSkins = await Skin.countDocuments();
-    const totalCases = await Case.countDocuments();
-    
-    const totalCoinsInCirculation = await User.aggregate([
-      { $group: { _id: null, total: { $sum: '$coins' } } }
+    const [
+      userStats,
+      caseStats,
+      serverStats,
+      transactionStats,
+      premiumStats,
+      battlepassStats,
+      recentActivity
+    ] = await Promise.all([
+      // Statistiques utilisateurs
+      User.aggregate([
+        {
+          $group: {
+            _id: null,
+            totalUsers: { $sum: 1 },
+            activeUsers: {
+              $sum: {
+                $cond: [
+                  { $gte: ['$lastLogin', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)] },
+                  1,
+                  0
+                ]
+              }
+            },
+            premiumUsers: {
+              $sum: {
+                $cond: [{ $eq: ['$isPremium', true] }, 1, 0]
+              }
+            },
+            bannedUsers: {
+              $sum: {
+                $cond: [{ $eq: ['$isBanned', true] }, 1, 0]
+              }
+            },
+            totalXcoins: { $sum: '$xcoins' },
+            totalXp: { $sum: '$stats.xp' }
+          }
+        }
+      ]),
+      
+      // Statistiques des cases
+      Case.aggregate([
+        {
+          $group: {
+            _id: null,
+            totalCases: { $sum: 1 },
+            activeCases: {
+              $sum: {
+                $cond: [{ $eq: ['$isActive', true] }, 1, 0]
+              }
+            },
+            totalOpened: { $sum: '$stats.totalOpened' },
+            totalRevenue: { $sum: '$stats.totalRevenue' }
+          }
+        }
+      ]),
+      
+      // Statistiques des serveurs
+      Server.aggregate([
+        {
+          $group: {
+            _id: '$status',
+            count: { $sum: 1 }
+          }
+        }
+      ]),
+      
+      // Statistiques des transactions
+      Transaction.aggregate([
+        {
+          $group: {
+            _id: '$type',
+            count: { $sum: 1 },
+            totalAmount: { $sum: '$amount' }
+          }
+        }
+      ]),
+      
+      // Statistiques premium
+      Premium.getStats(),
+      
+      // Statistiques battlepass
+      Battlepass.aggregate([
+        {
+          $group: {
+            _id: null,
+            totalBattlepasses: { $sum: 1 },
+            activeBattlepasses: {
+              $sum: {
+                $cond: [{ $eq: ['$isActive', true] }, 1, 0]
+              }
+            },
+            totalPurchases: { $sum: '$stats.totalPurchases' },
+            totalRevenue: { $sum: '$stats.totalRevenue' }
+          }
+        }
+      ]),
+      
+      // Activité récente
+      User.find({})
+        .select('username lastLogin createdAt')
+        .sort({ lastLogin: -1 })
+        .limit(10)
+        .lean()
     ]);
 
-    const recentUsers = await User.find()
-      .sort({ createdAt: -1 })
-      .limit(10)
-      .select('username avatar createdAt coins');
-
-    const topUsers = await User.find()
-      .sort({ coins: -1 })
-      .limit(10)
-      .select('username avatar coins stats.totalCasesOpened');
-
     res.json({
-      totalUsers,
-      totalSkins,
-      totalCases,
-      totalCoinsInCirculation: totalCoinsInCirculation[0]?.total || 0,
-      recentUsers,
-      topUsers
+      users: userStats[0] || {},
+      cases: caseStats[0] || {},
+      servers: serverStats.reduce((acc, stat) => {
+        acc[stat._id] = stat.count;
+        return acc;
+      }, {}),
+      transactions: transactionStats,
+      premium: premiumStats[0] || {},
+      battlepass: battlepassStats[0] || {},
+      recentActivity,
+      lastUpdated: new Date()
     });
   } catch (error) {
-    console.error('Erreur stats admin:', error);
-    res.status(500).json({ error: 'Erreur serveur' });
+    console.error('Erreur récupération dashboard admin:', error);
+    res.status(500).json({ message: 'Erreur serveur' });
   }
 });
 
-// Gestion des utilisateurs
-router.get('/users', authenticateAdminToken, async (req, res) => {
+// @route   GET /api/admin/users
+// @desc    Get all users with pagination
+// @access  Private (Admin only)
+router.get('/users', ensureAuthenticated, ensureAdmin, async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 20;
     const skip = (page - 1) * limit;
+    const search = req.query.search || '';
+    const filter = req.query.filter || 'all';
 
-    const users = await User.find()
-      .select('-adminPassword')
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit);
+    let query = {};
+    
+    // Filtre de recherche
+    if (search) {
+      query.$or = [
+        { username: { $regex: search, $options: 'i' } },
+        { email: { $regex: search, $options: 'i' } },
+        { displayName: { $regex: search, $options: 'i' } }
+      ];
+    }
+    
+    // Filtres spécifiques
+    switch (filter) {
+      case 'premium':
+        query.isPremium = true;
+        break;
+      case 'banned':
+        query.isBanned = true;
+        break;
+      case 'active':
+        query.lastLogin = { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) };
+        break;
+      case 'inactive':
+        query.lastLogin = { $lt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) };
+        break;
+    }
 
-    const total = await User.countDocuments();
+    const [users, total] = await Promise.all([
+      User.find(query)
+        .select('-password -emailVerificationToken -passwordResetToken -adminPassword')
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+      User.countDocuments(query)
+    ]);
 
     res.json({
       users,
@@ -178,141 +198,380 @@ router.get('/users', authenticateAdminToken, async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erreur liste utilisateurs:', error);
-    res.status(500).json({ error: 'Erreur serveur' });
+    console.error('Erreur récupération utilisateurs:', error);
+    res.status(500).json({ message: 'Erreur serveur' });
   }
 });
 
-// Donner des coins à un utilisateur
-router.post('/give-coins', authenticateAdminToken, [
-  body('userId').notEmpty().withMessage('ID utilisateur requis'),
-  body('amount').isInt({ min: 1 }).withMessage('Montant valide requis')
-], async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
-  const { userId, amount } = req.body;
-
+// @route   PUT /api/admin/users/:userId
+// @desc    Update user (ban, unban, modify)
+// @access  Private (Admin only)
+router.put('/users/:userId', ensureAuthenticated, ensureAdmin, async (req, res) => {
   try {
+    const { userId } = req.params;
+    const { action, reason, xcoins, isAdmin } = req.body;
+
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).json({ error: 'Utilisateur non trouvé' });
+      return res.status(404).json({ message: 'Utilisateur non trouvé' });
     }
 
-    user.coins += amount;
-    await user.save();
-
-    res.json({
-      message: `${amount} coins donnés à ${user.username}`,
-      newBalance: user.coins
-    });
-  } catch (error) {
-    console.error('Erreur give coins:', error);
-    res.status(500).json({ error: 'Erreur serveur' });
-  }
-});
-
-// Donner un skin à un utilisateur
-router.post('/give-skin', authenticateAdminToken, [
-  body('userId').notEmpty().withMessage('ID utilisateur requis'),
-  body('skinId').notEmpty().withMessage('ID skin requis')
-], async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
-  const { userId, skinId } = req.body;
-
-  try {
-    const user = await User.findById(userId);
-    const skin = await Skin.findById(skinId);
-
-    if (!user) {
-      return res.status(404).json({ error: 'Utilisateur non trouvé' });
+    switch (action) {
+      case 'ban':
+        user.isBanned = true;
+        user.banReason = reason || 'Bannissement par administrateur';
+        user.banExpires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 jours
+        break;
+        
+      case 'unban':
+        user.isBanned = false;
+        user.banReason = undefined;
+        user.banExpires = undefined;
+        break;
+        
+      case 'add_xcoins':
+        if (xcoins && xcoins > 0) {
+          user.xcoins += xcoins;
+        }
+        break;
+        
+      case 'remove_xcoins':
+        if (xcoins && xcoins > 0) {
+          user.xcoins = Math.max(0, user.xcoins - xcoins);
+        }
+        break;
+        
+      case 'set_admin':
+        user.isAdmin = isAdmin === true;
+        break;
+        
+      default:
+        return res.status(400).json({ message: 'Action invalide' });
     }
-    if (!skin) {
-      return res.status(404).json({ error: 'Skin non trouvé' });
-    }
-
-    user.inventory.push({
-      skin: skinId,
-      obtainedAt: new Date(),
-      caseOpened: 'Admin Give',
-      caseId: 'admin'
-    });
 
     await user.save();
 
+    // Envoyer une notification à l'utilisateur
+    let notificationMessage = '';
+    switch (action) {
+      case 'ban':
+        notificationMessage = `Votre compte a été suspendu. Raison: ${user.banReason}`;
+        break;
+      case 'unban':
+        notificationMessage = 'Votre compte a été réactivé.';
+        break;
+      case 'add_xcoins':
+        notificationMessage = `${xcoins} Xcoins ont été ajoutés à votre compte par un administrateur.`;
+        break;
+      case 'remove_xcoins':
+        notificationMessage = `${xcoins} Xcoins ont été retirés de votre compte par un administrateur.`;
+        break;
+    }
+
+    if (notificationMessage) {
+      await Notification.createNotification(
+        userId,
+        'admin_action',
+        'Action administrateur',
+        notificationMessage,
+        { action, reason, xcoins },
+        'high'
+      );
+    }
+
     res.json({
-      message: `Skin ${skin.name} donné à ${user.username}`,
-      skin: {
-        id: skin._id,
-        name: skin.name,
-        rarity: skin.rarity,
-        weapon: skin.weapon
+      message: 'Utilisateur mis à jour avec succès',
+      user: {
+        id: user._id,
+        username: user.username,
+        isBanned: user.isBanned,
+        banReason: user.banReason,
+        xcoins: user.xcoins,
+        isAdmin: user.isAdmin
       }
     });
   } catch (error) {
-    console.error('Erreur give skin:', error);
-    res.status(500).json({ error: 'Erreur serveur' });
+    console.error('Erreur mise à jour utilisateur:', error);
+    res.status(500).json({ message: 'Erreur serveur' });
   }
 });
 
-// Modifier le statut admin d'un utilisateur
-router.put('/toggle-admin/:userId', authenticateAdminToken, async (req, res) => {
+// @route   GET /api/admin/cases
+// @desc    Get all cases for admin management
+// @access  Private (Admin only)
+router.get('/cases', ensureAuthenticated, ensureAdmin, async (req, res) => {
   try {
-    const { userId } = req.params;
-    const { password } = req.body;
+    const cases = await Case.find({})
+      .populate('items.skinId', 'name weapon rarity image price')
+      .populate('featuredItems.skinId', 'name weapon rarity image price')
+      .sort({ createdAt: -1 });
 
-    if (userId === req.user._id.toString()) {
-      return res.status(400).json({ error: 'Vous ne pouvez pas modifier votre propre statut admin' });
-    }
+    res.json(cases);
+  } catch (error) {
+    console.error('Erreur récupération cases:', error);
+    res.status(500).json({ message: 'Erreur serveur' });
+  }
+});
 
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ error: 'Utilisateur non trouvé' });
-    }
+// @route   POST /api/admin/cases
+// @desc    Create new case
+// @access  Private (Admin only)
+router.post('/cases', ensureAuthenticated, ensureAdmin, async (req, res) => {
+  try {
+    const caseData = req.body;
+    
+    const newCase = new Case(caseData);
+    await newCase.save();
 
-    // Si on donne le statut admin, demander un mot de passe
-    if (!user.isAdmin && password) {
-      const hashedPassword = await bcrypt.hash(password, 12);
-      user.adminPassword = hashedPassword;
-    }
-
-    user.isAdmin = !user.isAdmin;
-    await user.save();
-
-    res.json({
-      message: `${user.username} est maintenant ${user.isAdmin ? 'admin' : 'utilisateur'}`,
-      isAdmin: user.isAdmin
+    res.status(201).json({
+      message: 'Case créée avec succès',
+      case: newCase
     });
   } catch (error) {
-    console.error('Erreur toggle admin:', error);
-    res.status(500).json({ error: 'Erreur serveur' });
+    console.error('Erreur création case:', error);
+    res.status(500).json({ message: 'Erreur serveur' });
   }
 });
 
-// Supprimer un utilisateur
-router.delete('/user/:userId', authenticateAdminToken, async (req, res) => {
+// @route   PUT /api/admin/cases/:caseId
+// @desc    Update case
+// @access  Private (Admin only)
+router.put('/cases/:caseId', ensureAuthenticated, ensureAdmin, async (req, res) => {
   try {
-    const { userId } = req.params;
+    const { caseId } = req.params;
+    const updateData = req.body;
 
-    if (userId === req.user._id.toString()) {
-      return res.status(400).json({ error: 'Vous ne pouvez pas supprimer votre propre compte' });
+    const updatedCase = await Case.findByIdAndUpdate(
+      caseId,
+      updateData,
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedCase) {
+      return res.status(404).json({ message: 'Case non trouvée' });
     }
 
-    const user = await User.findByIdAndDelete(userId);
-    if (!user) {
-      return res.status(404).json({ error: 'Utilisateur non trouvé' });
-    }
-
-    res.json({ message: `Utilisateur ${user.username} supprimé` });
+    res.json({
+      message: 'Case mise à jour avec succès',
+      case: updatedCase
+    });
   } catch (error) {
-    console.error('Erreur suppression utilisateur:', error);
-    res.status(500).json({ error: 'Erreur serveur' });
+    console.error('Erreur mise à jour case:', error);
+    res.status(500).json({ message: 'Erreur serveur' });
+  }
+});
+
+// @route   DELETE /api/admin/cases/:caseId
+// @desc    Delete case
+// @access  Private (Admin only)
+router.delete('/cases/:caseId', ensureAuthenticated, ensureAdmin, async (req, res) => {
+  try {
+    const { caseId } = req.params;
+
+    const deletedCase = await Case.findByIdAndDelete(caseId);
+
+    if (!deletedCase) {
+      return res.status(404).json({ message: 'Case non trouvée' });
+    }
+
+    res.json({
+      message: 'Case supprimée avec succès',
+      case: deletedCase
+    });
+  } catch (error) {
+    console.error('Erreur suppression case:', error);
+    res.status(500).json({ message: 'Erreur serveur' });
+  }
+});
+
+// @route   GET /api/admin/servers
+// @desc    Get all servers for admin management
+// @access  Private (Admin only)
+router.get('/servers', ensureAuthenticated, ensureAdmin, async (req, res) => {
+  try {
+    const servers = await Server.find({})
+      .populate('owner', 'username avatar')
+      .sort({ createdAt: -1 });
+
+    res.json(servers);
+  } catch (error) {
+    console.error('Erreur récupération serveurs:', error);
+    res.status(500).json({ message: 'Erreur serveur' });
+  }
+});
+
+// @route   PUT /api/admin/servers/:serverId
+// @desc    Update server (ban, unban, modify)
+// @access  Private (Admin only)
+router.put('/servers/:serverId', ensureAuthenticated, ensureAdmin, async (req, res) => {
+  try {
+    const { serverId } = req.params;
+    const { action, reason } = req.body;
+
+    const server = await Server.findById(serverId);
+    if (!server) {
+      return res.status(404).json({ message: 'Serveur non trouvé' });
+    }
+
+    switch (action) {
+      case 'ban':
+        server.isBanned = true;
+        server.banReason = reason || 'Serveur banni par administrateur';
+        break;
+        
+      case 'unban':
+        server.isBanned = false;
+        server.banReason = undefined;
+        break;
+        
+      case 'set_official':
+        server.isOfficial = true;
+        break;
+        
+      case 'remove_official':
+        server.isOfficial = false;
+        break;
+        
+      default:
+        return res.status(400).json({ message: 'Action invalide' });
+    }
+
+    await server.save();
+
+    res.json({
+      message: 'Serveur mis à jour avec succès',
+      server: {
+        id: server._id,
+        name: server.name,
+        isBanned: server.isBanned,
+        banReason: server.banReason,
+        isOfficial: server.isOfficial
+      }
+    });
+  } catch (error) {
+    console.error('Erreur mise à jour serveur:', error);
+    res.status(500).json({ message: 'Erreur serveur' });
+  }
+});
+
+// @route   GET /api/admin/transactions
+// @desc    Get all transactions
+// @access  Private (Admin only)
+router.get('/transactions', ensureAuthenticated, ensureAdmin, async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 50;
+    const skip = (page - 1) * limit;
+    const type = req.query.type;
+
+    let query = {};
+    if (type) {
+      query.type = type;
+    }
+
+    const [transactions, total] = await Promise.all([
+      Transaction.find(query)
+        .populate('userId', 'username email')
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+      Transaction.countDocuments(query)
+    ]);
+
+    res.json({
+      transactions,
+      pagination: {
+        page,
+        limit,
+        total,
+        pages: Math.ceil(total / limit)
+      }
+    });
+  } catch (error) {
+    console.error('Erreur récupération transactions:', error);
+    res.status(500).json({ message: 'Erreur serveur' });
+  }
+});
+
+// @route   POST /api/admin/notifications
+// @desc    Send notification to users
+// @access  Private (Admin only)
+router.post('/notifications', ensureAuthenticated, ensureAdmin, async (req, res) => {
+  try {
+    const { title, message, type, targetUsers, priority } = req.body;
+
+    if (!title || !message) {
+      return res.status(400).json({ message: 'Titre et message requis' });
+    }
+
+    let users = [];
+    
+    if (targetUsers === 'all') {
+      users = await User.find({}).select('_id');
+    } else if (targetUsers === 'premium') {
+      users = await User.find({ isPremium: true }).select('_id');
+    } else if (targetUsers === 'active') {
+      users = await User.find({ 
+        lastLogin: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } 
+      }).select('_id');
+    }
+
+    const notifications = users.map(user => ({
+      userId: user._id,
+      type: type || 'admin_message',
+      title,
+      message,
+      priority: priority || 'medium',
+      data: { adminNotification: true }
+    }));
+
+    await Notification.insertMany(notifications);
+
+    res.json({
+      message: `${notifications.length} notifications envoyées avec succès`,
+      count: notifications.length
+    });
+  } catch (error) {
+    console.error('Erreur envoi notifications:', error);
+    res.status(500).json({ message: 'Erreur serveur' });
+  }
+});
+
+// @route   GET /api/admin/logs
+// @desc    Get system logs
+// @access  Private (Admin only)
+router.get('/logs', ensureAuthenticated, ensureAdmin, async (req, res) => {
+  try {
+    // Simulation de logs système
+    const logs = [
+      {
+        id: 1,
+        timestamp: new Date(),
+        level: 'info',
+        message: 'Serveur démarré avec succès',
+        source: 'server'
+      },
+      {
+        id: 2,
+        timestamp: new Date(Date.now() - 60000),
+        level: 'warning',
+        message: 'Tentative de connexion échouée',
+        source: 'auth'
+      },
+      {
+        id: 3,
+        timestamp: new Date(Date.now() - 120000),
+        level: 'error',
+        message: 'Erreur base de données',
+        source: 'database'
+      }
+    ];
+
+    res.json({ logs });
+  } catch (error) {
+    console.error('Erreur récupération logs:', error);
+    res.status(500).json({ message: 'Erreur serveur' });
   }
 });
 

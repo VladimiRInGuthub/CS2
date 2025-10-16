@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useRef } from 'react';
+import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import './UserAvatar.css';
 
 const UserAvatar = ({ user, onLogout }) => {
@@ -14,9 +14,9 @@ const UserAvatar = ({ user, onLogout }) => {
     navigate('/settings');
   };
 
-  const handleLogout = async () => {
-    await onLogout();
-  };
+  // const handleLogout = async () => {
+  //   await onLogout();
+  // };
 
   return (
     <div className="user-avatar-container">

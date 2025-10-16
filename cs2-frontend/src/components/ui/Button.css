@@ -1,0 +1,202 @@
+/* Button Component Styles - Moderne SaaS */
+.ui-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  user-select: none;
+  white-space: nowrap;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+}
+
+.ui-button:focus-visible {
+  outline: 2px solid #4a90e2;
+  outline-offset: 2px;
+}
+
+/* Variants - Style Moderne */
+.ui-button--primary {
+  background: #4a90e2;
+  color: white;
+  box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+}
+
+.ui-button--primary:hover:not(:disabled) {
+  background: #5ba3f5;
+  box-shadow: 0 6px 20px rgba(74, 144, 226, 0.4);
+  transform: translateY(-2px);
+}
+
+.ui-button--primary:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(74, 144, 226, 0.3);
+}
+
+.ui-button--secondary {
+  background: transparent;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.ui-button--secondary:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.ui-button--secondary:active:not(:disabled) {
+  transform: translateY(0);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.ui-button--outline {
+  background: transparent;
+  color: #4a90e2;
+  border: 2px solid #4a90e2;
+}
+
+.ui-button--outline:hover:not(:disabled) {
+  background: #4a90e2;
+  color: white;
+  transform: translateY(-1px);
+}
+
+.ui-button--ghost {
+  background: transparent;
+  color: white;
+  border: 1px solid transparent;
+}
+
+.ui-button--ghost:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-1px);
+}
+
+.ui-button--ghost:active:not(:disabled) {
+  transform: translateY(0);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.ui-button--danger {
+  background: #ef4444;
+  color: white;
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+}
+
+.ui-button--danger:hover:not(:disabled) {
+  background: #f87171;
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+  transform: translateY(-2px);
+}
+
+.ui-button--danger:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(239, 68, 68, 0.3);
+}
+
+.ui-button--success {
+  background: #10b981;
+  color: white;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.ui-button--success:hover:not(:disabled) {
+  background: #34d399;
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+  transform: translateY(-2px);
+}
+
+.ui-button--success:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(16, 185, 129, 0.3);
+}
+
+/* Sizes */
+.ui-button--small {
+  padding: 8px 16px;
+  font-size: 14px;
+  border-radius: 6px;
+}
+
+.ui-button--medium {
+  padding: 12px 24px;
+  font-size: 16px;
+  border-radius: 8px;
+}
+
+.ui-button--large {
+  padding: 16px 32px;
+  font-size: 18px;
+  border-radius: 10px;
+}
+
+/* States */
+.ui-button--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.ui-button--loading {
+  cursor: wait;
+}
+
+.ui-button--loading .ui-button__content {
+  opacity: 0.7;
+}
+
+/* Spinner */
+.ui-button__spinner {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Focus states pour l'accessibilité */
+.ui-button--primary:focus-visible {
+  outline-color: #5ba3f5;
+}
+
+.ui-button--secondary:focus-visible,
+.ui-button--ghost:focus-visible {
+  outline-color: rgba(255, 255, 255, 0.5);
+}
+
+.ui-button--outline:focus-visible {
+  outline-color: #5ba3f5;
+}
+
+.ui-button--danger:focus-visible {
+  outline-color: #f87171;
+}
+
+.ui-button--success:focus-visible {
+  outline-color: #34d399;
+}

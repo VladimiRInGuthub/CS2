@@ -1,73 +1,62 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import DarkVeil from '../components/DarkVeil';
-import CoinIcon from '../components/CoinIcon';
+import ToggleSwitch from '../components/ui/ToggleSwitch';
+import Button from '../components/ui/Button';
+import Card from '../components/ui/Card';
+import './Premium.css';
 
 const Premium = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [selectedPlan, setSelectedPlan] = useState('monthly');
+  const [isYearly, setIsYearly] = useState(false);
   const navigate = useNavigate();
 
-  const premiumPlans = [
+  const pricingPlans = [
     {
-      id: 'monthly',
-      name: 'XPlay+ Mensuel',
-      price: 9.99,
-      duration: '1 mois',
-      icon: '⭐',
+      id: 'free',
+      name: 'Free Plan',
+      price: 0,
+      yearlyPrice: 0,
+      icon: '🆓',
       features: [
-        'Double gains en coins',
-        'Cases premium exclusives',
-        'Skins rares garanties',
-        'Accès prioritaire aux serveurs',
-        'Support prioritaire',
-        'Badge premium dans le chat'
+        'Send up to 2 transfers per month',
+        'Basic transaction history',
+        'Email support',
+        'Limited currency support (USD, EUR, GBP)',
+        'Basic security features'
       ],
       popular: false
     },
     {
-      id: 'yearly',
-      name: 'XPlay+ Annuel',
-      price: 99.99,
-      duration: '12 mois',
-      icon: '👑',
+      id: 'standard',
+      name: 'Standard Plan',
+      price: 9.99,
+      yearlyPrice: 99.99,
+      icon: '⭐',
       features: [
-        'Double gains en coins',
-        'Cases premium exclusives',
-        'Skins rares garanties',
-        'Accès prioritaire aux serveurs',
-        'Support prioritaire',
-        'Badge premium dans le chat',
-        'Battlepass premium inclus',
-        'Cases légendaires mensuelles',
-        'Réduction 50% sur tous les achats'
+        'Unlimited transfers',
+        'Transaction history with export options',
+        'Priority email support',
+        'Expanded currency support',
+        'Advanced security features'
       ],
-      popular: true,
-      savings: 'Économisez 20€'
+      popular: true
     },
     {
-      id: 'lifetime',
-      name: 'XPlay+ Lifetime',
-      price: 199.99,
-      duration: 'À vie',
+      id: 'pro',
+      name: 'Pro Plan',
+      price: 19.99,
+      yearlyPrice: 199.99,
       icon: '💎',
       features: [
-        'Double gains en coins',
-        'Cases premium exclusives',
-        'Skins rares garanties',
-        'Accès prioritaire aux serveurs',
-        'Support prioritaire',
-        'Badge premium dans le chat',
-        'Tous les battlepass futurs inclus',
-        'Cases légendaires mensuelles',
-        'Réduction 75% sur tous les achats',
-        'Accès aux serveurs VIP',
-        'Skins exclusifs lifetime'
+        'Unlimited transfers with priority processing',
+        'Comprehensive transaction analytics',
+        '24/7 priority support',
+        'Full currency support',
+        'Enhanced security features'
       ],
-      popular: false,
-      savings: 'Meilleure valeur'
+      popular: false
     }
   ];
 
@@ -89,326 +78,135 @@ const Premium = () => {
   }, [navigate]);
 
   const handlePurchase = (plan) => {
-    // Simulation d'achat
-    alert(`Achat de ${plan.name} pour ${plan.price}€\n\nFonctionnalité de paiement à implémenter avec Stripe/PayPal`);
+    const price = isYearly ? plan.yearlyPrice : plan.price;
+    const billing = isYearly ? 'yearly' : 'monthly';
+    
+    alert(`Achat de ${plan.name} pour ${price}€ (${billing})\n\nFonctionnalité de paiement à implémenter avec Stripe/PayPal`);
   };
 
   if (loading) {
     return (
-      <div style={{ position: 'relative', minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1 }}>
-          <DarkVeil hueShift={180} noiseIntensity={0.05} scanlineIntensity={0.03} speed={0.2} />
-        </div>
-        <div style={{ color: '#fff', textAlign: 'center', backgroundColor: 'rgba(15, 15, 15, 0.8)', padding: '20px', borderRadius: '8px' }}>
-          Chargement des offres premium...
-        </div>
+      <div className="premium-loading">
+        <div className="loading-spinner"></div>
+        <p>Chargement des offres premium...</p>
       </div>
     );
   }
 
   return (
-    <div style={{ position: 'relative', minHeight: '100vh', padding: '20px' }}>
-      {/* Fond animé */}
-      <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1 }}>
-        <DarkVeil hueShift={180} noiseIntensity={0.05} scanlineIntensity={0.03} speed={0.2} />
-      </div>
-
+    <div className="premium-page">
       {/* Header */}
-      <div style={{ textAlign: 'center', marginBottom: '40px', position: 'relative', zIndex: 1 }}>
-        <h1 style={{ color: '#fff', fontSize: '3rem', marginBottom: '10px', textShadow: '0 0 20px #FFD700' }}>
-          ⭐ XPlay+ Premium
-        </h1>
-        <p style={{ color: '#cfcfff', fontSize: '1.2rem', marginBottom: '20px' }}>
-          Débloquez tout le potentiel de votre expérience de jeu
+      <div className="premium-header">
+        <h1 className="premium-title">Pricing</h1>
+        <p className="premium-description">
+          Choose the perfect plan for your needs
         </p>
-        {user && (
-          <p style={{ color: '#cfcfff', fontSize: '1rem', display: 'flex', gap: '8px', alignItems: 'center', justifyContent: 'center' }}>
-            <CoinIcon size={18} /> {user.coins} coins disponibles
-          </p>
-        )}
       </div>
 
-      {/* Avantages Premium */}
-      <div style={{ 
-        marginBottom: '40px', 
-        position: 'relative', 
-        zIndex: 1 
-      }}>
-        <div style={{
-          backgroundColor: 'rgba(28, 28, 42, 0.9)',
-          borderRadius: '15px',
-          padding: '25px',
-          backdropFilter: 'blur(15px)',
-          border: '2px solid rgba(255, 215, 0, 0.3)',
-          maxWidth: '1200px',
-          margin: '0 auto'
-        }}>
-          <h3 style={{ color: '#FFD700', fontSize: '1.4rem', marginBottom: '20px', textAlign: 'center' }}>
-            🚀 Pourquoi passer à XPlay+ ?
-          </h3>
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', 
-            gap: '20px' 
-          }}>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '2.5rem', marginBottom: '10px' }}>💰</div>
-              <h4 style={{ color: '#fff', fontSize: '1.1rem', marginBottom: '5px' }}>Double Gains</h4>
-              <p style={{ color: '#cfcfff', fontSize: '0.9rem' }}>
-                Gagnez 2x plus de coins sur tous nos serveurs
-              </p>
-            </div>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '2.5rem', marginBottom: '10px' }}>📦</div>
-              <h4 style={{ color: '#fff', fontSize: '1.1rem', marginBottom: '5px' }}>Cases Exclusives</h4>
-              <p style={{ color: '#cfcfff', fontSize: '0.9rem' }}>
-                Accès à des cases premium avec skins rares
-              </p>
-            </div>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '2.5rem', marginBottom: '10px' }}>🎯</div>
-              <h4 style={{ color: '#fff', fontSize: '1.1rem', marginBottom: '5px' }}>Priorité Serveurs</h4>
-              <p style={{ color: '#cfcfff', fontSize: '0.9rem' }}>
-                Connexion prioritaire sur tous les serveurs
-              </p>
-            </div>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '2.5rem', marginBottom: '10px' }}>🏆</div>
-              <h4 style={{ color: '#fff', fontSize: '1.1rem', marginBottom: '5px' }}>Battlepass Premium</h4>
-              <p style={{ color: '#cfcfff', fontSize: '0.9rem' }}>
-                Accès complet au battlepass premium
-              </p>
-            </div>
-          </div>
-        </div>
+      {/* Toggle Switch */}
+      <div className="billing-toggle">
+        <ToggleSwitch
+          leftLabel="Monthly"
+          rightLabel="Billed Yearly"
+          isYearly={isYearly}
+          onChange={setIsYearly}
+        />
       </div>
 
-      {/* Plans Premium */}
-      <div style={{ 
-        display: 'grid', 
-        gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', 
-        gap: '30px', 
-        maxWidth: '1400px', 
-        margin: '0 auto',
-        position: 'relative',
-        zIndex: 1
-      }}>
-        {premiumPlans.map((plan) => (
-          <div
+      {/* Pricing Cards */}
+      <div className="pricing-grid">
+        {pricingPlans.map((plan) => (
+          <Card
             key={plan.id}
-            style={{
-              backgroundColor: 'rgba(28, 28, 42, 0.9)',
-              borderRadius: '20px',
-              padding: '30px',
-              backdropFilter: 'blur(15px)',
-              border: `3px solid ${plan.popular ? '#FFD700' : 'rgba(255,255,255,0.1)'}`,
-              position: 'relative',
-              transition: 'all 0.3s ease',
-              cursor: 'pointer',
-              transform: plan.popular ? 'scale(1.05)' : 'scale(1)'
-            }}
-            onMouseEnter={(e) => {
-              if (!plan.popular) {
-                e.target.style.transform = 'scale(1.02)';
-                e.target.style.borderColor = '#a259ff';
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (!plan.popular) {
-                e.target.style.transform = 'scale(1)';
-                e.target.style.borderColor = 'rgba(255,255,255,0.1)';
-              }
-            }}
-            onClick={() => setSelectedPlan(plan.id)}
+            variant="pricing"
+            className={`pricing-card ${plan.popular ? 'popular' : ''}`}
           >
-            {/* Badge populaire */}
-            {plan.popular && (
-              <div style={{
-                position: 'absolute',
-                top: '-15px',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                background: 'linear-gradient(90deg, #FFD700, #FFA500)',
-                color: '#000',
-                padding: '8px 20px',
-                borderRadius: '20px',
-                fontSize: '0.9rem',
-                fontWeight: 'bold',
-                boxShadow: '0 4px 15px rgba(255, 215, 0, 0.4)'
-              }}>
-                ⭐ POPULAIRE
-              </div>
-            )}
-
-            {/* Header du plan */}
-            <div style={{ textAlign: 'center', marginBottom: '25px' }}>
-              <div style={{ fontSize: '3rem', marginBottom: '10px' }}>
-                {plan.icon}
-              </div>
-              <h3 style={{ 
-                color: '#fff', 
-                fontSize: '1.5rem', 
-                marginBottom: '5px',
-                fontWeight: 'bold'
-              }}>
-                {plan.name}
-              </h3>
-              <div style={{ 
-                color: '#FFD700', 
-                fontSize: '2.5rem', 
-                fontWeight: 'bold',
-                marginBottom: '5px'
-              }}>
-                {plan.price}€
-              </div>
-              <div style={{ 
-                color: '#cfcfff', 
-                fontSize: '1rem',
-                marginBottom: '10px'
-              }}>
-                {plan.duration}
-              </div>
-              {plan.savings && (
-                <div style={{
-                  color: '#4CAF50',
-                  fontSize: '0.9rem',
-                  fontWeight: 'bold',
-                  backgroundColor: 'rgba(76, 175, 80, 0.2)',
-                  padding: '5px 10px',
-                  borderRadius: '15px',
-                  display: 'inline-block'
-                }}>
-                  {plan.savings}
-                </div>
-              )}
-            </div>
-
-            {/* Liste des fonctionnalités */}
-            <div style={{ marginBottom: '25px' }}>
-              {plan.features.map((feature, index) => (
-                <div
-                  key={index}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    marginBottom: '10px',
-                    color: '#cfcfff',
-                    fontSize: '0.9rem'
-                  }}
-                >
-                  <span style={{ 
-                    color: '#4CAF50', 
-                    marginRight: '10px',
-                    fontSize: '1rem'
-                  }}>
-                    ✓
+            <div className="pricing-card-content">
+              {/* Plan Header */}
+              <div className="plan-header">
+                <div className="plan-icon">{plan.icon}</div>
+                <h3 className="plan-name">{plan.name}</h3>
+                <div className="plan-price">
+                  <span className="price-amount">
+                    {isYearly ? plan.yearlyPrice : plan.price}€
                   </span>
-                  {feature}
+                  <span className="price-period">
+                    {plan.price === 0 ? '' : isYearly ? '/year' : '/m'}
+                  </span>
                 </div>
-              ))}
-            </div>
+              </div>
 
-            {/* Bouton d'achat */}
-            <button
-              onClick={() => handlePurchase(plan)}
-              style={{
-                background: plan.popular 
-                  ? 'linear-gradient(90deg, #FFD700, #FFA500)' 
-                  : 'linear-gradient(90deg, #a259ff, #3f2b96)',
-                color: plan.popular ? '#000' : '#fff',
-                border: 'none',
-                padding: '15px 25px',
-                borderRadius: '25px',
-                fontSize: '1.1rem',
-                fontWeight: 'bold',
-                cursor: 'pointer',
-                width: '100%',
-                transition: 'all 0.3s ease',
-                boxShadow: plan.popular 
-                  ? '0 4px 15px rgba(255, 215, 0, 0.4)' 
-                  : '0 4px 15px rgba(162, 89, 255, 0.4)'
-              }}
-            >
-              {plan.id === 'lifetime' ? '💎 Acheter Lifetime' : '⭐ Passer à Premium'}
-            </button>
-          </div>
+              {/* Features List */}
+              <div className="plan-features">
+                {plan.features.map((feature, index) => (
+                  <div key={index} className="feature-item">
+                    <span className="feature-check">✓</span>
+                    <span className="feature-text">{feature}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* CTA Button */}
+              <div className="plan-cta">
+                <Button
+                  variant={plan.popular ? 'primary' : 'secondary'}
+                  size="large"
+                  onClick={() => handlePurchase(plan)}
+                  className="get-started-btn"
+                >
+                  Get Started
+                </Button>
+              </div>
+            </div>
+          </Card>
         ))}
       </div>
 
-      {/* FAQ */}
-      <div style={{ 
-        marginTop: '50px', 
-        position: 'relative', 
-        zIndex: 1 
-      }}>
-        <div style={{
-          backgroundColor: 'rgba(28, 28, 42, 0.9)',
-          borderRadius: '15px',
-          padding: '30px',
-          backdropFilter: 'blur(15px)',
-          border: '2px solid rgba(255,255,255,0.1)',
-          maxWidth: '1000px',
-          margin: '0 auto'
-        }}>
-          <h3 style={{ color: '#fff', fontSize: '1.4rem', marginBottom: '25px', textAlign: 'center' }}>
-            ❓ Questions Fréquentes
-          </h3>
-          <div style={{ 
-            display: 'grid', 
-            gap: '20px' 
-          }}>
-            <div>
-              <h4 style={{ color: '#a259ff', fontSize: '1.1rem', marginBottom: '8px' }}>
-                Puis-je annuler mon abonnement à tout moment ?
+      {/* FAQ Section */}
+      <div className="faq-section">
+        <Card variant="glass" className="faq-card">
+          <h3 className="faq-title">Frequently Asked Questions</h3>
+          <div className="faq-list">
+            <div className="faq-item">
+              <h4 className="faq-question">
+                Can I cancel my subscription at any time?
               </h4>
-              <p style={{ color: '#cfcfff', fontSize: '0.9rem', lineHeight: '1.5' }}>
-                Oui, vous pouvez annuler votre abonnement XPlay+ à tout moment depuis votre profil. 
-                Vous conserverez vos avantages jusqu'à la fin de la période de facturation.
+              <p className="faq-answer">
+                Yes, you can cancel your subscription at any time from your profile. 
+                You will keep your benefits until the end of the billing period.
               </p>
             </div>
-            <div>
-              <h4 style={{ color: '#a259ff', fontSize: '1.1rem', marginBottom: '8px' }}>
-                Les skins premium sont-ils visibles sur tous les serveurs ?
+            <div className="faq-item">
+              <h4 className="faq-question">
+                Are premium skins visible on all servers?
               </h4>
-              <p style={{ color: '#cfcfff', fontSize: '0.9rem', lineHeight: '1.5' }}>
-                Les skins premium sont visibles uniquement sur nos serveurs dédiés. 
-                Ils ne sont pas visibles dans le matchmaking officiel de CS2 pour garantir votre sécurité.
+              <p className="faq-answer">
+                Premium skins are only visible on our dedicated servers. 
+                They are not visible in official CS2 matchmaking to ensure your safety.
               </p>
             </div>
-            <div>
-              <h4 style={{ color: '#a259ff', fontSize: '1.1rem', marginBottom: '8px' }}>
-                Y a-t-il un essai gratuit ?
+            <div className="faq-item">
+              <h4 className="faq-question">
+                Is there a free trial?
               </h4>
-              <p style={{ color: '#cfcfff', fontSize: '0.9rem', lineHeight: '1.5' }}>
-                Nous offrons un essai gratuit de 7 jours pour tous les nouveaux utilisateurs. 
-                Aucune carte de crédit requise pour commencer l'essai.
+              <p className="faq-answer">
+                We offer a 7-day free trial for all new users. 
+                No credit card required to start the trial.
               </p>
             </div>
           </div>
-        </div>
+        </Card>
       </div>
 
-      {/* Navigation */}
-      <div style={{ 
-        position: 'fixed', 
-        bottom: '20px', 
-        left: '20px', 
-        zIndex: 10 
-      }}>
-        <button
+      {/* Back Button */}
+      <div className="back-navigation">
+        <Button
+          variant="ghost"
           onClick={() => navigate('/dashboard')}
-          style={{
-            background: 'rgba(28, 28, 42, 0.9)',
-            color: '#fff',
-            border: '1px solid rgba(255,255,255,0.2)',
-            padding: '10px 20px',
-            borderRadius: '25px',
-            cursor: 'pointer',
-            backdropFilter: 'blur(10px)'
-          }}
+          className="back-btn"
         >
-          ← Retour au Dashboard
-        </button>
+          ← Back to Dashboard
+        </Button>
       </div>
     </div>
   );

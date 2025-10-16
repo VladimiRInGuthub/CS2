@@ -1,17 +1,56 @@
 ---
-description: "SkinCase – Liquid Glass Apple-level UI & UX
-- Applique un design de type Liquid Glass (verre dépoli semi-transparent avec flou d’arrière-plan) sur toutes les interfaces principales (login, dashboard, cases, inventaire, barre de navigation).
-- Utilise TailwindCSS avec `backdrop-blur`, `bg-opacity`, `drop-shadow`, `rounded-2xl`, `shadow-xl`, et des couleurs claires, bleutées et translucides pour donner un rendu Apple-like.
-- Intègre `GlassSurface` (ou un équivalent custom) pour créer des panneaux et cartes en verre animés.
-- Garde la **barre des tâches dynamique existante** et améliore son apparence (effet glass, animation de slide-in/out en douceur).
-- Rends toute l’UI **responsive** (desktop, tablette, mobile) avec une mise en page en grille propre et espacée.
-- Ajoute des **animations immersives et fluides** : transitions de pages, fade-in, slide-in, hover smooth, animation d’ouverture de caisses, morphing de composants.
-- Ajoute des **feedback visuels UX** : loaders/spinners pour les actions asynchrones, notifications de succès/erreur, états de chargement.
-- Garde et intègre les hooks existants (`useInventory`, `useXcoins`) et fais en sorte qu’ils fonctionnent parfaitement avec les nouveaux composants et animations.
-- Structure le code en composants modulaires, lisibles et maintenables, en suivant les meilleures pratiques React.
-- Respecte les bonnes pratiques d’accessibilité (contrastes suffisants, aria-labels, focus states visibles).
-"
-globs: ["**/*.tsx", "**/*.jsx", "**/*.css"]
 alwaysApply: true
+---
+
+# 🎯 Rules du projet SkinCase
+
+## Objectif global
+Tu travailles sur le développement complet du site **SkinCase**, un projet web dédié à **CS2** permettant :
+- la création et la gestion de serveurs privés/publics,
+- l’ouverture de cases pour obtenir des skins réels,
+- la gestion d’un inventaire connecté aux serveurs,
+- et une expérience utilisateur fluide et immersive.
+
+Ton rôle est de produire **un site web propre, professionnel et publiable**.
+
+## Principes fondamentaux
+- **Qualité avant tout :** chaque fichier doit être clair, structuré, cohérent et maintenable.  
+- **Expérience utilisateur (UX) prioritaire :** tout doit être intuitif, fluide et agréable.  
+- **Performance :** optimisations constantes côté front et back.  
+- **Liberté totale :** tu peux modifier n’importe quel fichier, structure, ou logique existante si cela améliore le résultat final.  
+- **Technologies libres :** choisis les outils ou frameworks les plus adaptés (React, Next.js, Tailwind, Node.js, MongoDB, etc.) tant que le rendu final est stable et professionnel.  
+- **Respect du style Dark Veil :** ambiances sombres, effets visuels immersifs (liquid glass, glow, néon), sans excès.  
+
+## Directives de développement
+1. **Structure claire :**
+   - Organisation logique des fichiers (components, pages, services, assets…).
+   - Code commenté et lisible.
+2. **Interface :**
+   - Design moderne, harmonieux, responsive (desktop & mobile).
+   - Couleurs principales : dégradés violets/aubergine.
+   - Animations fluides, cohérentes avec le thème.
+3. **Système d’ouverture de case :**
+   - Véritables animations inspirées de Hellecase.
+   - Sons et effets selon la rareté du skin.
+   - Résultat visuel clair et satisfaisant.
+4. **Serveurs CS2 :**
+   - Création, affichage et fermeture automatique des serveurs inactifs.
+   - Filtres avancés, mise à jour automatique toutes les 30 secondes.
+   - Badge pour serveurs publics du site.
+5. **Comptes utilisateurs :**
+   - Connexion Steam/Google/e-mail obligatoire.
+   - Inventaire, historique, solde interne, rôles et sécurité RGPD.
+6. **Publication et déploiement :**
+   - Prépare le code pour une mise en ligne réelle.
+   - Optimise SEO, performances et sécurité.
+   - Tout doit fonctionner sans dépendre d’un environnement local spécifique.
+
+## Comportement attendu de l’IA
+- Agis comme un **développeur web senior**.
+- Sois **autonome et cohérent** dans tes choix techniques.
+- Respecte les consignes, mais n’hésite pas à **améliorer ou refactoriser** si tu vois une meilleure solution.
+- Rends chaque livrable **propre, documenté et publiable**.
+- Teste et valide ton propre code avant de passer à la suite.
+
 ---
 

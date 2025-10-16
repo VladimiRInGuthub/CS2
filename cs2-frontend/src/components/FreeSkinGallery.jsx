@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import freeSkinAPI from '../services/freeSkinApi';
 import DarkVeil from './DarkVeil';
 import CoinIcon from './CoinIcon';
@@ -16,7 +16,7 @@ const FreeSkinGallery = ({ onSkinSelect, showPrices = true, showFilters = true }
     orderBy: 'popularity'
   });
   const [searchQuery, setSearchQuery] = useState('');
-  const [apiStatus, setApiStatus] = useState({});
+  // const [apiStatus, setApiStatus] = useState({});
 
   // Options de filtres
   const weaponOptions = [
@@ -40,26 +40,7 @@ const FreeSkinGallery = ({ onSkinSelect, showPrices = true, showFilters = true }
     { value: 'alphabetically', label: 'Alphabétique' }
   ];
 
-  // Charger les skins
-  useEffect(() => {
-    loadSkins();
-    checkAPIStatus();
-  }, [filters]);
-
-  // Recherche avec debounce
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      if (searchQuery) {
-        handleSearch();
-      } else {
-        loadSkins();
-      }
-    }, 500);
-
-    return () => clearTimeout(timeoutId);
-  }, [searchQuery]);
-
-  const loadSkins = async () => {
+  const loadSkins = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -78,9 +59,9 @@ const FreeSkinGallery = ({ onSkinSelect, showPrices = true, showFilters = true }
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters]);
 
-  const handleSearch = async () => {
+  const handleSearch = useCallback(async () => {
     try {
       setLoading(true);
       const results = await freeSkinAPI.searchSkins(searchQuery);
@@ -91,11 +72,12 @@ const FreeSkinGallery = ({ onSkinSelect, showPrices = true, showFilters = true }
     } finally {
       setLoading(false);
     }
-  };
+  }, [searchQuery]);
 
   const checkAPIStatus = async () => {
     const status = await freeSkinAPI.checkAPIStatus();
-    setApiStatus(status);
+    // setApiStatus(status);
+    console.log('API Status:', status);
   };
 
   const handleFilterChange = (key, value) => {
@@ -134,6 +116,25 @@ const FreeSkinGallery = ({ onSkinSelect, showPrices = true, showFilters = true }
       onSkinSelect(skin);
     }
   };
+
+  // Charger les skins
+  useEffect(() => {
+    loadSkins();
+    checkAPIStatus();
+  }, [filters, loadSkins]);
+
+  // Recherche avec debounce
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (searchQuery) {
+        handleSearch();
+      } else {
+        loadSkins();
+      }
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [searchQuery, handleSearch, loadSkins]);
 
   const getSkinImageUrl = (skin) => {
     return freeSkinAPI.getSkinImageUrl(skin);

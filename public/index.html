@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkinCase - CS2 Case Opening & Servers</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #14141e 0%, #1e1e2d 100%);
+            color: #fff;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            padding: 40px 0;
+        }
+        .logo {
+            font-size: 4rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #a259ff, #3f2b96);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+        }
+        .subtitle {
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 40px;
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        .feature {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px 30px;
+            backdrop-filter: blur(20px);
+            transition: all 0.3s ease;
+        }
+        .feature:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            border-color: rgba(162, 89, 255, 0.3);
+        }
+        .feature-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+        .feature h3 {
+            color: #a259ff;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+        .feature p {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+        }
+        .cta {
+            text-align: center;
+            margin: 50px 0;
+        }
+        .btn {
+            display: inline-block;
+            background: linear-gradient(45deg, #a259ff, #3f2b96);
+            color: #fff;
+            padding: 15px 30px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            margin: 0 15px;
+            border: none;
+            cursor: pointer;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(162, 89, 255, 0.3);
+        }
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .status {
+            margin: 50px 0;
+            padding: 30px;
+            background: rgba(40, 167, 69, 0.1);
+            border: 1px solid rgba(40, 167, 69, 0.3);
+            border-radius: 20px;
+            text-align: center;
+        }
+        .status h3 {
+            color: #28a745;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+        .status p {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 10px;
+        }
+        .admin-info {
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .admin-info h4 {
+            color: #ffc107;
+            margin-bottom: 10px;
+        }
+        .footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 50px;
+        }
+        .footer p {
+            color: rgba(255, 255, 255, 0.6);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="logo">SkinCase</h1>
+            <p class="subtitle">CS2 Case Opening & Servers</p>
+        </div>
+        
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">📦</div>
+                <h3>Cases Authentiques</h3>
+                <p>Ouvrez des cases CS2 avec des skins réels et des animations immersives. Probabilités transparentes et historique de vos drops.</p>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon">🖥️</div>
+                <h3>Serveurs Privés</h3>
+                <p>Créez et rejoignez des serveurs CS2 avec skinchanger intégré. Deathmatch, Retake, Surf et bien plus !</p>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon">🎯</div>
+                <h3>Battlepass</h3>
+                <p>Progressez dans le battlepass saisonnier et débloquez des récompenses exclusives avec des missions quotidiennes.</p>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon">💰</div>
+                <h3>Xcoins</h3>
+                <p>Système de monnaie virtuelle pour toutes vos transactions. Achetez des cases, des skins et des avantages premium.</p>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon">🎨</div>
+                <h3>Skinchanger</h3>
+                <p>Gérez votre inventaire et équipez vos skins préférés. Créez des loadouts personnalisés pour chaque situation.</p>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon">👑</div>
+                <h3>Premium</h3>
+                <p>Débloquez tous les avantages premium : bonus Xcoins, cases exclusives, support prioritaire et bien plus !</p>
+            </div>
+        </div>
+        
+        <div class="cta">
+            <button class="btn" onclick="window.location.href='/login'">Se Connecter</button>
+            <button class="btn btn-secondary" onclick="window.location.href='/register'">S'inscrire</button>
+        </div>
+        
+        <div class="status">
+            <h3>✅ Site Opérationnel</h3>
+            <p><strong>Backend API:</strong> http://localhost:5000</p>
+            <p><strong>Frontend:</strong> http://localhost:5000</p>
+            <p><strong>Health Check:</strong> <a href="/health" style="color: #a259ff;">/health</a></p>
+            <p><strong>API Test:</strong> <a href="/api/test" style="color: #a259ff;">/api/test</a></p>
+            
+            <div class="admin-info">
+                <h4>🔧 Compte Administrateur</h4>
+                <p><strong>Email:</strong> admin@skincase.com</p>
+                <p><strong>Mot de passe:</strong> admin123</p>
+                <p><em>Utilisez ce compte pour accéder au panel d'administration</em></p>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>© 2024 SkinCase - L'expérience ultime de case opening pour Counter-Strike 2</p>
+        </div>
+    </div>
+    
+    <script>
+        // Test de connexion API
+        fetch('/api/test')
+            .then(response => response.json())
+            .then(data => {
+                console.log('✅ API Backend:', data);
+            })
+            .catch(error => {
+                console.error('❌ Erreur API:', error);
+            });
+    </script>
+</body>
+</html>

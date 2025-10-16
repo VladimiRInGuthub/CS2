@@ -1,0 +1,503 @@
+/* Accessibilité - Styles pour l'inclusion */
+.accessibility-announcer {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Raccourcis clavier */
+.keyboard-shortcuts-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.keyboard-shortcuts-modal {
+  background: linear-gradient(135deg, rgba(20, 20, 30, 0.98), rgba(30, 30, 45, 0.98));
+  border: 1px solid rgba(162, 89, 255, 0.3);
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(20px);
+  max-width: 500px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.shortcuts-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.shortcuts-header h2 {
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.close-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: #fff;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  transition: all 0.2s ease;
+}
+
+.close-btn:hover {
+  background: rgba(162, 89, 255, 0.3);
+  transform: scale(1.05);
+}
+
+.shortcuts-list {
+  padding: 20px;
+}
+
+.shortcut-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.shortcut-item:last-child {
+  border-bottom: none;
+}
+
+.shortcut-key {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.8rem;
+  color: #a259ff;
+  font-weight: 600;
+  min-width: 80px;
+  text-align: center;
+}
+
+.shortcut-description {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+  flex: 1;
+  margin-left: 15px;
+}
+
+.shortcuts-footer {
+  padding: 15px 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+}
+
+.shortcuts-footer p {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+/* Indicateurs de focus */
+.focus-indicator {
+  position: relative;
+}
+
+.focus-indicator:focus-within {
+  outline: 2px solid #a259ff;
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+/* Boutons accessibles */
+.accessible-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  outline: none;
+  min-height: 44px; /* Taille minimale pour l'accessibilité */
+}
+
+.accessible-button:focus {
+  outline: 2px solid #a259ff;
+  outline-offset: 2px;
+}
+
+.accessible-button:focus:not(:focus-visible) {
+  outline: none;
+}
+
+.accessible-button:focus-visible {
+  outline: 2px solid #a259ff;
+  outline-offset: 2px;
+}
+
+.accessible-button.primary {
+  background: linear-gradient(45deg, #a259ff, #3f2b96);
+  color: #fff;
+}
+
+.accessible-button.primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(162, 89, 255, 0.3);
+}
+
+.accessible-button.secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.accessible-button.secondary:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(162, 89, 255, 0.3);
+}
+
+.accessible-button.danger {
+  background: rgba(220, 53, 69, 0.2);
+  color: #dc3545;
+  border: 1px solid rgba(220, 53, 69, 0.3);
+}
+
+.accessible-button.danger:hover:not(:disabled) {
+  background: rgba(220, 53, 69, 0.3);
+  color: #fff;
+}
+
+.accessible-button.small {
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  min-height: 36px;
+}
+
+.accessible-button.medium {
+  padding: 12px 24px;
+  font-size: 0.9rem;
+  min-height: 44px;
+}
+
+.accessible-button.large {
+  padding: 16px 32px;
+  font-size: 1rem;
+  min-height: 52px;
+}
+
+.accessible-button.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.accessible-button.loading {
+  cursor: wait;
+}
+
+.loading-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+}
+
+.spinner {
+  width: 100%;
+  height: 100%;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid #fff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.button-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Modales accessibles */
+.accessible-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.accessible-modal {
+  background: linear-gradient(135deg, rgba(20, 20, 30, 0.98), rgba(30, 30, 45, 0.98));
+  border: 1px solid rgba(162, 89, 255, 0.3);
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(20px);
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.accessible-modal.small {
+  width: 100%;
+  max-width: 400px;
+}
+
+.accessible-modal.medium {
+  width: 100%;
+  max-width: 600px;
+}
+
+.accessible-modal.large {
+  width: 100%;
+  max-width: 800px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-title {
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.modal-close-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: #fff;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  transition: all 0.2s ease;
+}
+
+.modal-close-btn:hover {
+  background: rgba(162, 89, 255, 0.3);
+  transform: scale(1.05);
+}
+
+.modal-content {
+  padding: 20px;
+}
+
+/* Toasts accessibles */
+.accessible-toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 400px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  z-index: 10000;
+  animation: toastSlideIn 0.3s ease-out;
+  transition: all 0.3s ease;
+}
+
+.accessible-toast.hidden {
+  animation: toastSlideOut 0.3s ease-in;
+  opacity: 0;
+  transform: translateX(100%);
+}
+
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes toastSlideOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+.accessible-toast.success {
+  border-left: 4px solid #28a745;
+}
+
+.accessible-toast.error {
+  border-left: 4px solid #dc3545;
+}
+
+.accessible-toast.warning {
+  border-left: 4px solid #ffc107;
+}
+
+.accessible-toast.info {
+  border-left: 4px solid #17a2b8;
+}
+
+.toast-icon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.toast-content {
+  flex: 1;
+}
+
+.toast-message {
+  color: #333;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.toast-close {
+  background: none;
+  border: none;
+  color: rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.toast-close:hover {
+  background: rgba(0, 0, 0, 0.1);
+  color: #000;
+}
+
+/* Améliorations pour les lecteurs d'écran */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Styles pour le mode sombre des toasts */
+@media (prefers-color-scheme: dark) {
+  .accessible-toast {
+    background: rgba(20, 20, 30, 0.95);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .toast-message {
+    color: #fff;
+  }
+  
+  .toast-close {
+    color: rgba(255, 255, 255, 0.5);
+  }
+  
+  .toast-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .keyboard-shortcuts-modal {
+    margin: 10px;
+    max-height: 90vh;
+  }
+  
+  .accessible-modal {
+    margin: 10px;
+    max-height: 90vh;
+  }
+  
+  .accessible-toast {
+    right: 10px;
+    left: 10px;
+    max-width: none;
+  }
+  
+  .shortcut-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .shortcut-description {
+    margin-left: 0;
+  }
+}

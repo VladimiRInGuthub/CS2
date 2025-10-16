@@ -1,0 +1,213 @@
+/* Input Component Styles */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.input-label {
+  color: var(--color-white);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--spacing-1);
+}
+
+.input-required {
+  color: var(--color-error);
+  margin-left: var(--spacing-1);
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input {
+  width: 100%;
+  background: var(--bg-glass);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-3) var(--spacing-4);
+  color: var(--color-white);
+  font-size: var(--font-size-base);
+  font-family: var(--font-family-sans);
+  transition: all var(--transition-normal);
+  backdrop-filter: var(--blur-sm);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--border-accent);
+  box-shadow: 0 0 0 3px rgba(162, 89, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.input::placeholder {
+  color: var(--color-gray-500);
+}
+
+.input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* Variants */
+.input-default {
+  background: var(--bg-glass);
+  border-color: var(--border-primary);
+}
+
+.input-glass {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: var(--blur-md);
+}
+
+.input-glass:focus {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--border-secondary);
+}
+
+.input-outline {
+  background: transparent;
+  border-color: var(--border-secondary);
+}
+
+.input-outline:focus {
+  background: var(--bg-glass);
+  border-color: var(--border-accent);
+}
+
+/* Sizes */
+.input-sm {
+  padding: var(--spacing-2) var(--spacing-3);
+  font-size: var(--font-size-sm);
+  border-radius: var(--border-radius-sm);
+}
+
+.input-md {
+  padding: var(--spacing-3) var(--spacing-4);
+  font-size: var(--font-size-base);
+  border-radius: var(--border-radius-md);
+}
+
+.input-lg {
+  padding: var(--spacing-4) var(--spacing-5);
+  font-size: var(--font-size-lg);
+  border-radius: var(--border-radius-lg);
+}
+
+/* States */
+.input-error {
+  border-color: var(--color-error);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.input-error:focus {
+  border-color: var(--color-error);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+}
+
+.input-disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Icons */
+.input-with-icon {
+  position: relative;
+}
+
+.input-icon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-gray-400);
+  font-size: var(--font-size-lg);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.input-icon-left {
+  left: var(--spacing-3);
+}
+
+.input-icon-right {
+  right: var(--spacing-3);
+}
+
+.input-icon-left + .input {
+  padding-left: calc(var(--spacing-3) + var(--spacing-6) + var(--spacing-2));
+}
+
+.input-icon-right + .input {
+  padding-right: calc(var(--spacing-3) + var(--spacing-6) + var(--spacing-2));
+}
+
+/* Error message */
+.input-error-message {
+  color: var(--color-error);
+  font-size: var(--font-size-sm);
+  margin-top: var(--spacing-1);
+}
+
+/* Special input types */
+.input[type="password"] {
+  font-family: var(--font-family-mono);
+  letter-spacing: 0.1em;
+}
+
+.input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.input[type="number"]::-webkit-outer-spin-button,
+.input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.input[type="search"] {
+  padding-right: calc(var(--spacing-4) + 20px);
+}
+
+.input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  height: 16px;
+  width: 16px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%9ca3af'%3E%3Cpath d='M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z'/%3E%3C/svg%3E") no-repeat center;
+  background-size: 16px;
+  cursor: pointer;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .input {
+    font-size: 16px; /* Prevent zoom on iOS */
+  }
+  
+  .input-lg {
+    padding: var(--spacing-3) var(--spacing-4);
+    font-size: var(--font-size-base);
+  }
+}
+
+@media (max-width: 480px) {
+  .input-group {
+    gap: var(--spacing-1);
+  }
+  
+  .input-label {
+    font-size: var(--font-size-xs);
+  }
+  
+  .input {
+    padding: var(--spacing-2) var(--spacing-3);
+  }
+  
+  .input-icon {
+    font-size: var(--font-size-base);
+  }
+}

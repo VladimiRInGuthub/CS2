@@ -66,9 +66,11 @@ export const ToastContainer = ({ toasts = [] }) => {
   );
 };
 
-export default {
+const GlobalAnimations = {
   RouteTransitionWrapper,
   BackgroundParticles,
   ScrollIndicator,
   ToastContainer,
 };
+
+export default GlobalAnimations;

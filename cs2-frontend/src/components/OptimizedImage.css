@@ -1,0 +1,268 @@
+.optimized-image-container {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+}
+
+.optimized-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.3s ease;
+}
+
+.optimized-image.loading {
+  opacity: 0;
+}
+
+.optimized-image.loaded {
+  opacity: 1;
+}
+
+.image-placeholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.placeholder-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.5;
+}
+
+.skeleton-image {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    rgba(255, 255, 255, 0.1) 25%, 
+    rgba(255, 255, 255, 0.2) 50%, 
+    rgba(255, 255, 255, 0.1) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.image-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+.error-icon {
+  font-size: 2rem;
+  margin-bottom: 8px;
+  opacity: 0.5;
+}
+
+/* Skin Image Styles */
+.skin-image-container {
+  position: relative;
+  display: inline-block;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.skin-image-container:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  border-color: var(--rarity-color, rgba(162, 89, 255, 0.3));
+}
+
+.skin-image-small {
+  width: 80px;
+  height: 60px;
+}
+
+.skin-image-medium {
+  width: 120px;
+  height: 90px;
+}
+
+.skin-image-large {
+  width: 200px;
+  height: 150px;
+}
+
+.skin-image-xl {
+  width: 300px;
+  height: 225px;
+}
+
+.skin-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.rarity-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.rarity-bar {
+  height: 100%;
+  width: 100%;
+  background: var(--rarity-color);
+  box-shadow: 0 0 10px var(--rarity-color);
+}
+
+.skin-name-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+  padding: 15px 10px 10px;
+  color: #fff;
+  font-size: 0.8rem;
+  line-height: 1.2;
+}
+
+.skin-name {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.skin-weapon {
+  display: block;
+  font-size: 0.7rem;
+  opacity: 0.8;
+}
+
+/* User Avatar Styles */
+.user-avatar-container {
+  position: relative;
+  display: inline-block;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid rgba(162, 89, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.user-avatar-container:hover {
+  border-color: rgba(162, 89, 255, 0.6);
+  transform: scale(1.05);
+}
+
+.avatar-small {
+  width: 32px;
+  height: 32px;
+}
+
+.avatar-medium {
+  width: 48px;
+  height: 48px;
+}
+
+.avatar-large {
+  width: 64px;
+  height: 64px;
+}
+
+.avatar-xl {
+  width: 96px;
+  height: 96px;
+}
+
+.user-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.online-status {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+}
+
+.status-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid rgba(20, 20, 30, 0.9);
+}
+
+.status-dot.online {
+  background: #28a745;
+  box-shadow: 0 0 8px rgba(40, 167, 69, 0.5);
+}
+
+.status-dot.offline {
+  background: #6c757d;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .skin-image-small {
+    width: 60px;
+    height: 45px;
+  }
+  
+  .skin-image-medium {
+    width: 100px;
+    height: 75px;
+  }
+  
+  .skin-image-large {
+    width: 150px;
+    height: 112px;
+  }
+  
+  .skin-image-xl {
+    width: 200px;
+    height: 150px;
+  }
+  
+  .avatar-small {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .avatar-medium {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .avatar-large {
+    width: 56px;
+    height: 56px;
+  }
+  
+  .avatar-xl {
+    width: 80px;
+    height: 80px;
+  }
+}

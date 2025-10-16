@@ -1,0 +1,262 @@
+/* Card Component Styles - Moderne SaaS */
+.ui-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: rgba(26, 26, 26, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+}
+
+.ui-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(74, 144, 226, 0.05) 0%, rgba(91, 163, 245, 0.03) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.ui-card:hover::before {
+  opacity: 1;
+}
+
+/* Variants */
+.ui-card--default {
+  background: rgba(26, 26, 26, 0.8);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.ui-card--elevated {
+  background: rgba(26, 26, 26, 0.9);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.ui-card--outlined {
+  background: transparent;
+  border: 2px solid rgba(74, 144, 226, 0.3);
+}
+
+.ui-card--glass {
+  background: rgba(26, 26, 26, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+}
+
+.ui-card--gradient {
+  background: linear-gradient(135deg, rgba(74, 144, 226, 0.1) 0%, rgba(91, 163, 245, 0.05) 100%);
+  border: 1px solid rgba(74, 144, 226, 0.2);
+}
+
+/* Sizes */
+.ui-card--small {
+  padding: 16px;
+  border-radius: 12px;
+}
+
+.ui-card--medium {
+  padding: 24px;
+  border-radius: 16px;
+}
+
+.ui-card--large {
+  padding: 32px;
+  border-radius: 20px;
+}
+
+/* Interactive States */
+.ui-card--hoverable:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+  border-color: rgba(74, 144, 226, 0.3);
+}
+
+.ui-card--clickable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.ui-card--clickable:active {
+  transform: translateY(-2px);
+  transition: transform 0.1s ease;
+}
+
+.ui-card--clickable:focus {
+  outline: 2px solid rgba(74, 144, 226, 0.5);
+  outline-offset: 2px;
+}
+
+.ui-card--clickable:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Card Sections */
+.ui-card__header {
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ui-card__body {
+  flex: 1;
+  margin-bottom: 16px;
+}
+
+.ui-card__footer {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ui-card__title {
+  margin: 0 0 8px 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #ffffff;
+  line-height: 1.4;
+  font-family: 'Inter', sans-serif;
+}
+
+.ui-card__description {
+  margin: 0;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.5;
+  font-family: 'Inter', sans-serif;
+}
+
+.ui-card__image {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  margin-bottom: 16px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.ui-card__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.ui-card--hoverable:hover .ui-card__image img {
+  transform: scale(1.05);
+}
+
+/* Special Card Types */
+.ui-card--case {
+  background: linear-gradient(135deg, rgba(74, 144, 226, 0.15) 0%, rgba(91, 163, 245, 0.1) 100%);
+  border: 2px solid rgba(74, 144, 226, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.ui-card--case::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(74, 144, 226, 0.1), transparent);
+  animation: shimmer 3s infinite;
+  pointer-events: none;
+}
+
+.ui-card--skin {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.05) 100%);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.ui-card--server {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.05) 100%);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.ui-card--premium {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(217, 119, 6, 0.1) 100%);
+  border: 2px solid rgba(245, 158, 11, 0.4);
+  position: relative;
+}
+
+.ui-card--premium::before {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(217, 119, 6, 0.1) 100%);
+}
+
+/* Pricing Card Special */
+.ui-card--pricing {
+  background: rgba(26, 26, 26, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.ui-card--pricing.popular {
+  border: 2px solid #4a90e2;
+  transform: scale(1.05);
+  box-shadow: 0 8px 32px rgba(74, 144, 226, 0.3);
+}
+
+.ui-card--pricing.popular::before {
+  content: 'POPULAIRE';
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #4a90e2;
+  color: white;
+  padding: 6px 20px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* Animations */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%) translateY(-100%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(100%) translateY(100%) rotate(45deg);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .ui-card--small {
+    padding: 12px;
+  }
+  
+  .ui-card--medium {
+    padding: 16px;
+  }
+  
+  .ui-card--large {
+    padding: 24px;
+  }
+  
+  .ui-card__title {
+    font-size: 1.125rem;
+  }
+  
+  .ui-card__description {
+    font-size: 0.8rem;
+  }
+  
+  .ui-card--pricing.popular {
+    transform: scale(1.02);
+  }
+}

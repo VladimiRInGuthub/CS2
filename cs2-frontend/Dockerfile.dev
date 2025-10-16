@@ -1,0 +1,23 @@
+# Dockerfile pour le frontend en développement
+FROM node:18-alpine
+
+# Installer les dépendances système
+RUN apk add --no-cache git
+
+# Créer le répertoire de l'application
+WORKDIR /app
+
+# Copier les fichiers de configuration
+COPY package*.json ./
+
+# Installer les dépendances
+RUN npm ci
+
+# Copier le code source
+COPY . .
+
+# Exposer le port
+EXPOSE 3000
+
+# Commande de démarrage en mode développement
+CMD ["npm", "start"]

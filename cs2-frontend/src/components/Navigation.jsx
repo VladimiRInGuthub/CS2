@@ -1,26 +1,26 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import GlassSurface from './GlassSurface';
+import { useTranslation } from 'react-i18next';
 import CoinIcon from './CoinIcon';
-import UserAvatar from './UserAvatar';
-import VariableProximity from './VariableProximity';
+import LanguageSelector from './LanguageSelector';
+import Notifications from './Notifications';
+import UserProfileDropdown from './UserProfileDropdown';
 import './Navigation.css';
 
 const Navigation = ({ isAuthenticated }) => {
-  const handleLogout = () => {
-    window.location.href = '/auth/logout';
-  };
+  const { t } = useTranslation();
   const location = useLocation();
   const [user, setUser] = useState(null);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-  const [isExpanding, setIsExpanding] = useState(false);
-  const [scrollDirection, setScrollDirection] = useState('none');
-  const [lastScrollY, setLastScrollY] = useState(0);
-  const navRef = useRef(null);
-  const animationFrameRef = useRef(null);
-  const containerRef = useRef(null);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+  const [unreadNotifications, setUnreadNotifications] = useState(0);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const handleLogout = () => {
+    window.location.href = '/auth/logout';
+  };
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -36,184 +36,181 @@ const Navigation = ({ isAuthenticated }) => {
     }
   }, [isAuthenticated]);
 
-  // Détection du scroll avec throttling et direction
+  // Récupérer les notifications non lues
+  useEffect(() => {
+    if (isAuthenticated) {
+      const fetchUnreadNotifications = async () => {
+        try {
+          const response = await axios.get('/api/notifications/unread-count', { withCredentials: true });
+          setUnreadNotifications(response.data.count);
+        } catch (error) {
+          console.error('Erreur récupération notifications:', error);
+        }
+      };
+      
+      fetchUnreadNotifications();
+      
+      // Polling toutes les 30 secondes pour les nouvelles notifications
+      const interval = setInterval(fetchUnreadNotifications, 30000);
+      
+      return () => clearInterval(interval);
+    }
+  }, [isAuthenticated]);
+
+  // Détection du scroll
   useEffect(() => {
     const handleScroll = () => {
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
-
-      animationFrameRef.current = requestAnimationFrame(() => {
-        const scrollTop = window.scrollY;
-        const currentDirection = scrollTop > lastScrollY ? 'down' : 'up';
-        
-        // Détection de la direction du scroll
-        if (Math.abs(scrollTop - lastScrollY) > 5) {
-          setScrollDirection(currentDirection);
-        }
-
-        // Réaction immédiate au moindre scroll
-        const shouldBeScrolled = scrollTop > 0;
-        
-        if (shouldBeScrolled !== isScrolled) {
-          setIsScrolled(shouldBeScrolled);
-        }
-
-        setLastScrollY(scrollTop);
-      });
+      const scrollTop = window.scrollY;
+      setIsScrolled(scrollTop > 50);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
-    };
-  }, [isScrolled, lastScrollY]);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
-  // Gestion des micro-interactions au hover
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-    if (isScrolled) {
-      setIsExpanding(true);
-    }
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-    if (isScrolled) {
-      // Délai pour permettre l'expansion complète avant la rétraction
-      setTimeout(() => {
-        if (!isHovered) {
-          setIsExpanding(false);
-        }
-      }, 100);
-    }
-  };
-
+  // Navigation principale - style maquette
   const navItems = [
     { path: '/home', label: 'Home', icon: '🏠' },
-    { path: '/dashboard', label: 'Dashboard', icon: '📊', requiresAuth: true },
-    { path: '/cases', label: 'Cases', icon: '📦', requiresAuth: true },
-    { path: '/skins', label: 'Skins', icon: '🎨', requiresAuth: true },
-    { path: '/free-skins', label: 'Skins Gratuits', icon: '🆓', requiresAuth: true },
-    { path: '/inventory', label: 'Inventory', icon: '🎒', requiresAuth: true },
-    { path: '/skinchanger', label: 'Skinchanger', icon: '🔧', requiresAuth: true },
-    { path: '/servers', label: 'Serveurs', icon: '🖥️', requiresAuth: true },
-    { path: '/battlepass', label: 'Battlepass', icon: '🏆', requiresAuth: true },
-    { path: '/premium', label: 'Premium', icon: '⭐', requiresAuth: true },
+    { path: '/cases', label: 'Pricing', icon: '📦', requiresAuth: true },
+    { path: '/servers', label: 'Download', icon: '🖥️', requiresAuth: true },
+    { path: '/inventory', label: 'FAQ', icon: '❓', requiresAuth: true },
+    { path: '/settings', label: 'Contact', icon: '📞', requiresAuth: true },
   ];
 
-  const filteredItems = navItems.filter(item => 
+  const filteredNavItems = navItems.filter(item => 
     !item.requiresAuth || isAuthenticated
   );
 
-  // Calcul des classes dynamiques pour les animations
-  const getNavClasses = () => {
-    const classes = ['navigation'];
-    
-    if (isScrolled) classes.push('scrolled');
-    if (isHovered) classes.push('hovered');
-    if (isExpanding) classes.push('expanding');
-    if (scrollDirection === 'down') classes.push('scroll-down');
-    if (scrollDirection === 'up') classes.push('scroll-up');
-    
-    return classes.join(' ');
-  };
-
   return (
-    <nav 
-      ref={navRef}
-      className={getNavClasses()}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      <GlassSurface 
-        className="nav-container"
-        width="100%"
-        height={isScrolled && !isHovered ? 24 : 60}
-        borderRadius={isScrolled && !isHovered ? 20 : 50}
-        borderWidth={0.5}
-        brightness={60}
-        opacity={0.85}
-        blur={25}
-        displace={15}
-        backgroundOpacity={0.1}
-        saturation={1.1}
-        distortionScale={-150}
-        redOffset={0}
-        greenOffset={15}
-        blueOffset={30}
-        xChannel="R"
-        yChannel="G"
-        mixBlendMode="screen"
-        style={{
-          padding: isScrolled && !isHovered ? "8px 16px" : "16px 32px",
-          minHeight: isScrolled && !isHovered ? "24px" : "60px"
-        }}
-      >
-        {!isScrolled || isHovered ? (
-          <>
-            <div className="nav-brand" ref={containerRef}>
-              <div className="brand-icon">🎯</div>
-              <VariableProximity
-                label="AimCase"
-                className="brand-text"
-                fromFontVariationSettings="'wght' 400, 'opsz' 9"
-                toFontVariationSettings="'wght' 1000, 'opsz' 40"
-                containerRef={containerRef}
-                radius={100}
-                falloff="linear"
-              />
+    <nav className={`navigation ${isScrolled ? 'scrolled' : ''}`}>
+      <div className="nav-container">
+        {/* Logo */}
+        <div className="nav-brand">
+          <Link to="/home" className="brand-link">
+            <span className="brand-icon">🎯</span>
+            <span className="brand-text">AimCase</span>
+          </Link>
+        </div>
+
+        {/* Menu principal */}
+        <div className="nav-menu">
+          {filteredNavItems.map((item) => (
+            <Link
+              key={item.path}
+              to={item.path}
+              className={`nav-link ${location.pathname === item.path ? 'active' : ''}`}
+            >
+              <span className="nav-icon">{item.icon}</span>
+              <span className="nav-label">{item.label}</span>
+            </Link>
+          ))}
+        </div>
+
+        {/* Actions utilisateur */}
+        <div className="nav-actions">
+          {isAuthenticated && user && (
+            <div className="coins-display">
+              <CoinIcon size={16} />
+              <span className="coins-amount">{user.xcoins || 0}</span>
             </div>
-            
-            <div className="nav-links">
-              {filteredItems.map((item, index) => (
+          )}
+          
+          <LanguageSelector />
+          
+          {isAuthenticated ? (
+            <>
+              <button 
+                className="notifications-btn"
+                onClick={() => setNotificationsOpen(true)}
+                title={t('notifications.title', 'Notifications')}
+              >
+                <span className="notification-icon">🔔</span>
+                {unreadNotifications > 0 && (
+                  <span className="notification-badge">{unreadNotifications}</span>
+                )}
+              </button>
+              
+              <div className="user-profile-container">
+                <button 
+                  className="user-profile-btn"
+                  onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
+                >
+                  <img 
+                    src={user?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.username || 'User')}&background=random&color=fff`}
+                    alt={user?.username}
+                    className="user-profile-avatar"
+                    onError={(e) => {
+                      e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.username || 'User')}&background=random&color=fff`;
+                    }}
+                  />
+                </button>
+                
+                <UserProfileDropdown 
+                  user={user}
+                  onLogout={handleLogout}
+                  isOpen={profileDropdownOpen}
+                  onClose={() => setProfileDropdownOpen(false)}
+                />
+              </div>
+            </>
+          ) : (
+            <Link to="/login" className="login-btn">
+              {t('navigation.login')}
+            </Link>
+          )}
+
+          {/* Menu mobile */}
+          <button 
+            className="mobile-menu-btn"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            title="Menu"
+          >
+            <div className={`hamburger ${mobileMenuOpen ? 'active' : ''}`}>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      {/* Menu mobile overlay */}
+      {mobileMenuOpen && (
+        <div className="mobile-menu-overlay" onClick={() => setMobileMenuOpen(false)}>
+          <div className="mobile-menu" onClick={(e) => e.stopPropagation()}>
+            <div className="mobile-menu-header">
+              <h3>Menu</h3>
+              <button 
+                className="mobile-menu-close"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                ✕
+              </button>
+            </div>
+            <div className="mobile-menu-items">
+              {filteredNavItems.map((item, index) => (
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`nav-link ${location.pathname === item.path ? 'active' : ''}`}
-                  style={{ 
-                    animationDelay: `${index * 0.05}s`,
-                    transitionDelay: `${index * 0.02}s`
-                  }}
+                  className={`mobile-menu-item ${location.pathname === item.path ? 'active' : ''}`}
+                  onClick={() => setMobileMenuOpen(false)}
                 >
-                  <span className="nav-icon">{item.icon}</span>
-                  <span className="nav-label">{item.label}</span>
+                  <span className="mobile-menu-icon">{item.icon}</span>
+                  <span className="mobile-menu-label">{item.label}</span>
                 </Link>
               ))}
             </div>
-
-            <div className="nav-actions">
-              {isAuthenticated && user && (
-                <div className="coins-display">
-                  <span className="coins-icon"><CoinIcon size={16} /></span>
-                  <span className="coins-amount">{user.coins || 0}</span>
-                </div>
-              )}
-              
-              {isAuthenticated ? (
-                <UserAvatar user={user} onLogout={handleLogout} />
-              ) : (
-                <Link to="/login" className="login-btn">
-                  Login
-                </Link>
-              )}
-            </div>
-          </>
-        ) : (
-          <div className="mini-nav">
-            <div className="mini-indicator">
-              <div className="indicator-dot"></div>
-              <div className="indicator-dot"></div>
-              <div className="indicator-dot"></div>
-            </div>
           </div>
-        )}
-      </GlassSurface>
+        </div>
+      )}
+      
+      {/* Composants modaux */}
+      <Notifications 
+        isOpen={notificationsOpen}
+        onClose={() => setNotificationsOpen(false)}
+      />
     </nav>
   );
 };
 
-export default Navigation; 
+export default Navigation;

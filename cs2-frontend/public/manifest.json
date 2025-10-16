@@ -1,6 +1,7 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "SkinCase",
+  "name": "SkinCase - CS2 Case Opening & Servers",
+  "description": "Ouvrez des cases CS2, créez des serveurs privés et gérez votre inventaire de skins",
   "icons": [
     {
       "src": "favicon.ico",
@@ -18,8 +19,76 @@
       "sizes": "512x512"
     }
   ],
-  "start_url": ".",
+  "start_url": "/",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#a259ff",
+  "background_color": "#14141e",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "fr",
+  "categories": ["games", "entertainment"],
+  "screenshots": [
+    {
+      "src": "screenshot1.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Page d'accueil SkinCase"
+    },
+    {
+      "src": "screenshot2.png",
+      "sizes": "750x1334",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Interface mobile SkinCase"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Ouvrir une case",
+      "short_name": "Cases",
+      "description": "Accéder rapidement aux cases",
+      "url": "/cases",
+      "icons": [
+        {
+          "src": "logo192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Inventaire",
+      "short_name": "Inventaire",
+      "description": "Voir votre inventaire de skins",
+      "url": "/inventory",
+      "icons": [
+        {
+          "src": "logo192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Serveurs",
+      "short_name": "Serveurs",
+      "description": "Rejoindre des serveurs CS2",
+      "url": "/servers",
+      "icons": [
+        {
+          "src": "logo192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ],
+  "related_applications": [
+    {
+      "platform": "web",
+      "url": "https://skincase.com"
+    }
+  ],
+  "prefer_related_applications": false,
+  "edge_side_panel": {
+    "preferred_width": 400
+  }
 }

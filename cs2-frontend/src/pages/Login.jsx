@@ -88,6 +88,29 @@ const Login = () => {
                   >
                     <span className="social-icon">✈️</span>
                   </GlassSurface>
+                  
+                  {/* Bouton de test pour le développement */}
+                  <a 
+                    href="http://localhost:5000/auth/test-login"
+                    className="social-btn test-btn"
+                    style={{
+                      background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                      color: 'white',
+                      textDecoration: 'none',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.5rem',
+                      padding: '0.75rem 1.5rem',
+                      borderRadius: '0.5rem',
+                      fontWeight: '600',
+                      transition: 'all 0.2s ease-in-out',
+                      boxShadow: '0 4px 14px 0 rgba(16, 185, 129, 0.3)'
+                    }}
+                  >
+                    <span className="social-icon">🧪</span>
+                    <span>Test Login</span>
+                  </a>
                 </div>
               </div>
 
