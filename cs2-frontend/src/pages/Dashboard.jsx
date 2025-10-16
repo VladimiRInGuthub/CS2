@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import DarkVeil from '../components/DarkVeil';
+import CoinIcon from '../components/CoinIcon';
+import GlassSurface from '../components/GlassSurface';
 // Styles intégrés dans le composant
 
 const Dashboard = () => {
@@ -9,12 +11,11 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    // Utiliser la fonction logout du fichier auth.js qui gère les sessions
-    window.location.href = '/login';
+    window.location.href = '/auth/logout';
   };
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/users/me')
+    axios.get('/api/users/me', { withCredentials: true })
       .then(res => setUser(res.data))
       .catch(err => console.error(err));
   }, []);
@@ -88,47 +89,68 @@ const Dashboard = () => {
         />
       </div>
 
-      <div style={{
-        backgroundColor: 'rgba(28, 28, 42, 0.9)',
-        color: 'white',
-        borderRadius: '12px',
-        padding: '30px',
-        width: '100%',
-        maxWidth: '420px',
-        textAlign: 'center',
-        boxShadow: '0 0 20px rgba(255,255,255,0.05)',
-        backdropFilter: 'blur(15px)',
-        border: '1px solid rgba(255, 255, 255, 0.1)'
-      }}>
-        <img
-          src={user.avatar}
-          alt="Avatar"
-          style={{ borderRadius: '50%', width: '100px', marginBottom: '20px' }}
-        />
-        <h2 style={{ marginBottom: '10px' }}>{user.username}</h2>
-        <p style={{ marginBottom: '20px' }}>💰 Coins : {user.coins}</p>
+      <GlassSurface 
+        variant="card"
+        className="dashboard-card"
+        brightness="60%"
+        saturation="1.1"
+        redOffset="10px"
+        greenOffset="20px"
+        blueOffset="30px"
+        style={{
+          color: 'white',
+          borderRadius: '16px',
+          padding: '24px 32px',
+          width: '100%',
+          maxWidth: '1280px',
+          textAlign: 'left',
+          boxShadow: '0 0 28px rgba(255,255,255,0.06)'
+        }}
+      >
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '24px',
+          width: '100%'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', minWidth: 0 }}>
+            <img
+              src={user.avatar}
+              alt="Avatar"
+              style={{ borderRadius: '50%', width: '84px', height: '84px', objectFit: 'cover' }}
+            />
+            <div style={{ minWidth: 0 }}>
+              <h2 style={{ margin: 0, fontSize: '1.8rem', lineHeight: 1.2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user.username}</h2>
+              <p style={{ marginTop: '8px', display: 'flex', alignItems: 'center', gap: '8px', opacity: 0.9 }}>
+                <CoinIcon size={18} />
+                Coins : {user.coins}
+              </p>
+            </div>
+          </div>
 
-        <button
-          onClick={() => navigate('/cases')}
-          style={buttonStyle}
-        >
-          🎁 Ouvrir des cases
-        </button>
-
-        <button
-          onClick={() => navigate('/inventory')}
-          style={{ ...buttonStyle, backgroundColor: '#555', marginTop: '12px' }}
-        >
-          🎒 Voir mon inventaire
-        </button>
-
-        <button
-          onClick={handleLogout}
-          style={{ ...buttonStyle, backgroundColor: '#dc3545', marginTop: '12px' }}
-        >
-          🚪 Se déconnecter
-        </button>
-      </div>
+          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+            <button
+              onClick={() => navigate('/cases')}
+              style={buttonStyle}
+            >
+              🎁 Ouvrir des cases
+            </button>
+            <button
+              onClick={() => navigate('/inventory')}
+              style={{ ...buttonStyle, backgroundColor: '#555' }}
+            >
+              🎒 Voir mon inventaire
+            </button>
+            <button
+              onClick={handleLogout}
+              style={{ ...buttonStyle, backgroundColor: '#dc3545' }}
+            >
+              🚪 Se déconnecter
+            </button>
+          </div>
+        </div>
+      </GlassSurface>
     </div>
   );
 };
@@ -137,12 +159,11 @@ const buttonStyle = {
   backgroundColor: '#FF6A00',
   color: '#fff',
   border: 'none',
-  padding: '12px 24px',
-  borderRadius: '6px',
+  padding: '14px 20px',
+  borderRadius: '10px',
   fontSize: '1rem',
   cursor: 'pointer',
-  width: '100%',
-  maxWidth: '300px'
+  whiteSpace: 'nowrap'
 };
 
 export default Dashboard;

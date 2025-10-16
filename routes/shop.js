@@ -1,12 +1,21 @@
 const express = require('express');
 const router = express.Router();
-const auth = require('../utils/authMiddleware');
 const User = require('../models/User');
+const { body, validationResult } = require('express-validator');
+
+const ensureAuthenticated = (req, res, next) => {
+  if (req.isAuthenticated && req.isAuthenticated()) return next();
+  return res.status(401).json({ error: 'Non authentifié' });
+};
 
 const CASE_PRICE = 250;
 
-router.post('/buy', auth, async (req, res) => {
+router.post('/buy', ensureAuthenticated, body('item').optional().isString(), async (req, res) => {
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
     const user = await User.findById(req.user.id);
     if (!user) return res.status(404).json({ error: 'Utilisateur introuvable' });
 

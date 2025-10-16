@@ -8,10 +8,10 @@ export const setupAxiosAuth = () => {
   axios.defaults.baseURL = API_BASE_URL;
 };
 
-// Vérifier si l'utilisateur est authentifié
+// Vérifier si l'utilisateur est authentifié (session)
 export const isAuthenticated = async () => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/auth/me`);
+    const response = await axios.get(`/auth/me`);
     return response.status === 200;
   } catch (error) {
     return false;
@@ -21,7 +21,7 @@ export const isAuthenticated = async () => {
 // Déconnecter l'utilisateur
 export const logout = async () => {
   try {
-    await axios.get(`${API_BASE_URL}/auth/logout`);
+    await axios.get(`/auth/logout`);
   } catch (error) {
     console.error('Logout error:', error);
   }
@@ -31,10 +31,9 @@ export const logout = async () => {
 // Vérifier la validité de la session
 export const verifyToken = async () => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/auth/me`);
+    const response = await axios.get(`/auth/me`);
     return response.status === 200;
   } catch (error) {
-    console.error('Session verification failed:', error);
     return false;
   }
-}; 
+};

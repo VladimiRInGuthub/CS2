@@ -10,14 +10,9 @@ const CaseHistory = ({ onClose }) => {
   useEffect(() => {
     const loadHistory = async () => {
       try {
-        const token = localStorage.getItem('token');
         const [historyRes, statsRes] = await Promise.all([
-          axios.get('http://localhost:5000/api/cases/history', {
-            headers: { Authorization: `Bearer ${token}` }
-          }),
-          axios.get('http://localhost:5000/api/cases/user-stats', {
-            headers: { Authorization: `Bearer ${token}` }
-          })
+          axios.get('http://localhost:5000/api/cases/history', { withCredentials: true }),
+          axios.get('http://localhost:5000/api/cases/user-stats', { withCredentials: true })
         ]);
 
         setHistory(historyRes.data);

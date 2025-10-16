@@ -1,0 +1,17 @@
+---
+description: "SkinCase – Liquid Glass Apple-level UI & UX
+- Applique un design de type Liquid Glass (verre dépoli semi-transparent avec flou d’arrière-plan) sur toutes les interfaces principales (login, dashboard, cases, inventaire, barre de navigation).
+- Utilise TailwindCSS avec `backdrop-blur`, `bg-opacity`, `drop-shadow`, `rounded-2xl`, `shadow-xl`, et des couleurs claires, bleutées et translucides pour donner un rendu Apple-like.
+- Intègre `GlassSurface` (ou un équivalent custom) pour créer des panneaux et cartes en verre animés.
+- Garde la **barre des tâches dynamique existante** et améliore son apparence (effet glass, animation de slide-in/out en douceur).
+- Rends toute l’UI **responsive** (desktop, tablette, mobile) avec une mise en page en grille propre et espacée.
+- Ajoute des **animations immersives et fluides** : transitions de pages, fade-in, slide-in, hover smooth, animation d’ouverture de caisses, morphing de composants.
+- Ajoute des **feedback visuels UX** : loaders/spinners pour les actions asynchrones, notifications de succès/erreur, états de chargement.
+- Garde et intègre les hooks existants (`useInventory`, `useXcoins`) et fais en sorte qu’ils fonctionnent parfaitement avec les nouveaux composants et animations.
+- Structure le code en composants modulaires, lisibles et maintenables, en suivant les meilleures pratiques React.
+- Respecte les bonnes pratiques d’accessibilité (contrastes suffisants, aria-labels, focus states visibles).
+"
+globs: ["**/*.tsx", "**/*.jsx", "**/*.css"]
+alwaysApply: true
+---
+

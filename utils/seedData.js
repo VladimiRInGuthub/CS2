@@ -15,6 +15,8 @@ const skinsData = [
   {
     name: 'AK-47 | Redline',
     weapon: 'AK-47',
+    weaponType: 'ak47',
+    category: 'Rifle',
     rarity: 'Rare',
     image: 'https://via.placeholder.com/300x200/FF5722/FFFFFF?text=AK-47+Redline',
     price: 1500
@@ -22,6 +24,8 @@ const skinsData = [
   {
     name: 'AK-47 | Fire Serpent',
     weapon: 'AK-47',
+    weaponType: 'ak47',
+    category: 'Rifle',
     rarity: 'Legendary',
     image: 'https://via.placeholder.com/300x200/FF9800/FFFFFF?text=AK-47+Fire+Serpent',
     price: 5000
@@ -29,6 +33,8 @@ const skinsData = [
   {
     name: 'AK-47 | Elite Build',
     weapon: 'AK-47',
+    weaponType: 'ak47',
+    category: 'Rifle',
     rarity: 'Common',
     image: 'https://via.placeholder.com/300x200/666666/FFFFFF?text=AK-47+Elite+Build',
     price: 200
@@ -151,7 +157,7 @@ const casesData = [
     name: 'Case Standard',
     description: 'Une case classique avec des skins de qualité variable',
     price: 500,
-    image: 'https://via.placeholder.com/300x200/666666/FFFFFF?text=Standard+Case',
+    image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDMwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjNjY2NjY2Ii8+Cjx0ZXh0IHg9IjE1MCIgeT0iMTA1IiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjAiIGZpbGw9IiNGRkZGRkYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlN0YW5kYXJkIENhc2U8L3RleHQ+Cjwvc3ZnPg==',
     rarity: 'Common',
     items: [
       { skinId: null, dropRate: 40 }, // Sera remplacé par l'ID réel

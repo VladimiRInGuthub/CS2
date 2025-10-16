@@ -156,13 +156,14 @@ const GlassSurface = ({
   };
 
   const containerStyle = {
-    ...style,
     width: typeof width === "number" ? `${width}px` : width,
     height: typeof height === "number" ? `${height}px` : height,
     borderRadius: `${borderRadius}px`,
     "--glass-frost": backgroundOpacity,
     "--glass-saturation": saturation,
     "--filter-id": `url(#${filterId})`,
+    // Le style passé par le parent doit avoir la priorité
+    ...style,
   };
 
   return (

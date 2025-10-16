@@ -12,6 +12,8 @@ const skins = [
   {
     name: 'AK-47 | Elite Build',
     weapon: 'AK-47',
+    weaponType: 'ak47',
+    category: 'Rifle',
     rarity: 'Common',
     image: 'https://via.placeholder.com/300x200/666666/FFFFFF?text=AK-47+Elite+Build',
     price: 50,
@@ -20,6 +22,8 @@ const skins = [
   {
     name: 'M4A4 | Evil Daimyo',
     weapon: 'M4A4',
+    weaponType: 'm4a4',
+    category: 'Rifle',
     rarity: 'Common',
     image: 'https://via.placeholder.com/300x200/666666/FFFFFF?text=M4A4+Evil+Daimyo',
     price: 45,
@@ -28,6 +32,8 @@ const skins = [
   {
     name: 'USP-S | Guardian',
     weapon: 'USP-S',
+    weaponType: 'usp',
+    category: 'Pistol',
     rarity: 'Common',
     image: 'https://via.placeholder.com/300x200/666666/FFFFFF?text=USP-S+Guardian',
     price: 30,
@@ -36,6 +42,8 @@ const skins = [
   {
     name: 'Glock-18 | Water Elemental',
     weapon: 'Glock-18',
+    weaponType: 'glock',
+    category: 'Pistol',
     rarity: 'Common',
     image: 'https://via.placeholder.com/300x200/666666/FFFFFF?text=Glock-18+Water+Elemental',
     price: 35,
@@ -46,6 +54,8 @@ const skins = [
   {
     name: 'AWP | Hyper Beast',
     weapon: 'AWP',
+    weaponType: 'awp',
+    category: 'Sniper',
     rarity: 'Uncommon',
     image: 'https://via.placeholder.com/300x200/4CAF50/FFFFFF?text=AWP+Hyper+Beast',
     price: 150,
@@ -54,6 +64,8 @@ const skins = [
   {
     name: 'Desert Eagle | Golden Koi',
     weapon: 'Desert Eagle',
+    weaponType: 'deagle',
+    category: 'Pistol',
     rarity: 'Uncommon',
     image: 'https://via.placeholder.com/300x200/4CAF50/FFFFFF?text=Desert+Eagle+Golden+Koi',
     price: 120,
@@ -62,6 +74,8 @@ const skins = [
   {
     name: 'M4A1-S | Hyper Beast',
     weapon: 'M4A1-S',
+    weaponType: 'm4a1s',
+    category: 'Rifle',
     rarity: 'Uncommon',
     image: 'https://via.placeholder.com/300x200/4CAF50/FFFFFF?text=M4A1-S+Hyper+Beast',
     price: 180,
@@ -72,6 +86,8 @@ const skins = [
   {
     name: 'AK-47 | Fire Serpent',
     weapon: 'AK-47',
+    weaponType: 'ak47',
+    category: 'Rifle',
     rarity: 'Rare',
     image: 'https://via.placeholder.com/300x200/2196F3/FFFFFF?text=AK-47+Fire+Serpent',
     price: 500,
@@ -80,6 +96,8 @@ const skins = [
   {
     name: 'AWP | Dragon Lore',
     weapon: 'AWP',
+    weaponType: 'awp',
+    category: 'Sniper',
     rarity: 'Rare',
     image: 'https://via.placeholder.com/300x200/2196F3/FFFFFF?text=AWP+Dragon+Lore',
     price: 800,
@@ -88,6 +106,8 @@ const skins = [
   {
     name: 'M4A4 | Howl',
     weapon: 'M4A4',
+    weaponType: 'm4a4',
+    category: 'Rifle',
     rarity: 'Rare',
     image: 'https://via.placeholder.com/300x200/2196F3/FFFFFF?text=M4A4+Howl',
     price: 600,
@@ -98,6 +118,8 @@ const skins = [
   {
     name: 'Karambit | Fade',
     weapon: 'Knife',
+    weaponType: 'knife',
+    category: 'Knife',
     rarity: 'Epic',
     image: 'https://via.placeholder.com/300x200/9C27B0/FFFFFF?text=Karambit+Fade',
     price: 2000,
@@ -106,6 +128,8 @@ const skins = [
   {
     name: 'M9 Bayonet | Marble Fade',
     weapon: 'Knife',
+    weaponType: 'knife',
+    category: 'Knife',
     rarity: 'Epic',
     image: 'https://via.placeholder.com/300x200/9C27B0/FFFFFF?text=M9+Bayonet+Marble+Fade',
     price: 1800,
@@ -116,6 +140,8 @@ const skins = [
   {
     name: 'Butterfly Knife | Sapphire',
     weapon: 'Knife',
+    weaponType: 'knife',
+    category: 'Knife',
     rarity: 'Legendary',
     image: 'https://via.placeholder.com/300x200/FF9800/FFFFFF?text=Butterfly+Knife+Sapphire',
     price: 5000,
@@ -124,6 +150,8 @@ const skins = [
   {
     name: 'M4A4 | Poseidon',
     weapon: 'M4A4',
+    weaponType: 'm4a4',
+    category: 'Rifle',
     rarity: 'Legendary',
     image: 'https://via.placeholder.com/300x200/FF9800/FFFFFF?text=M4A4+Poseidon',
     price: 3000,

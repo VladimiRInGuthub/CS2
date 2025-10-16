@@ -17,7 +17,7 @@ body, html {
   color: #ffffff;
   background: #0a0a0a;
   overflow-x: visible;
-  min-height: 300vh; /* Force une hauteur minimale pour créer du scroll */
+  min-height: 100vh;
 }
 
 /* Fond avec grain et dégradé subtil */
@@ -163,6 +163,38 @@ a:hover {
   padding: 0 20px;
 }
 
+/* Toasts */
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 10000;
+}
+
+.toast {
+  color: #fff;
+  padding: 12px 16px;
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.45);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  animation: toast-fade-in 0.2s ease forwards;
+}
+
+.toast.success { border-color: rgba(46, 204, 113, 0.4); }
+.toast.error { border-color: rgba(231, 76, 60, 0.4); }
+.toast.info { border-color: rgba(52, 152, 219, 0.4); }
+
+@keyframes toast-fade-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .container {
@@ -176,4 +208,53 @@ a:hover {
   h2 {
     font-size: clamp(1.5rem, 5vw, 2.5rem);
   }
+}
+
+/* Background particles */
+.bg-particles {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.bg-particle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 12px rgba(255,255,255,0.25);
+  animation: floatY linear infinite;
+}
+
+@keyframes floatY {
+  from { transform: translateY(10px); opacity: 0.6; }
+  50% { opacity: 1; }
+  to { transform: translateY(-10px); opacity: 0.6; }
+}
+
+/* Scroll Indicator */
+.scroll-indicator {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #3f2b96, #a259ff);
+  z-index: 9999;
+  transition: width 0.15s ease;
+}
+
+/* Route transition */
+.route-transition.fadeIn { animation: routeFadeIn 0.25s ease forwards; }
+.route-transition.fadeOut { animation: routeFadeOut 0.15s ease forwards; }
+
+@keyframes routeFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes routeFadeOut {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-8px); }
 }

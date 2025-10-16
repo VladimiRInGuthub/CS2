@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import DarkVeil from '../components/DarkVeil';
+import CoinIcon from '../components/CoinIcon';
 import CaseOpening from '../components/CaseOpening';
 import CaseHistory from '../components/CaseHistory';
+import { useInventory } from '../hooks/useInventory';
 // Styles intégrés dans le composant
 
 const Cases = () => {
@@ -14,22 +16,14 @@ const Cases = () => {
   const [showHistory, setShowHistory] = useState(false);
   const [selectedCase, setSelectedCase] = useState(null);
   const navigate = useNavigate();
+  const { refreshInventory } = useInventory();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      navigate('/login');
-      return;
-    }
-
-    // Charger les cases et les infos utilisateur
     const loadData = async () => {
       try {
         const [casesRes, userRes] = await Promise.all([
-          axios.get('http://localhost:5000/api/cases'),
-          axios.get('http://localhost:5000/api/users/me', {
-            headers: { Authorization: `Bearer ${token}` }
-          })
+          axios.get('/api/cases', { withCredentials: true }),
+          axios.get('/api/users/me', { withCredentials: true })
         ]);
 
         setCases(casesRes.data);
@@ -37,7 +31,6 @@ const Cases = () => {
       } catch (error) {
         console.error('Erreur chargement:', error);
         if (error.response?.status === 401) {
-          localStorage.removeItem('token');
           navigate('/login');
         }
       } finally {
@@ -49,16 +42,19 @@ const Cases = () => {
   }, [navigate]);
 
   const openCase = async (caseItem) => {
-    const token = localStorage.getItem('token');
-    if (!token) return;
-
     try {
-      const response = await axios.post('http://localhost:5000/api/cases/open', 
+      const response = await axios.post('/api/cases/open', 
         { caseId: caseItem._id },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { withCredentials: true }
       );
 
       setUser(prev => ({ ...prev, coins: response.data.newBalance }));
+      
+      // Rafraîchir l'inventaire après ouverture réussie
+      if (refreshInventory) {
+        refreshInventory();
+      }
+      
       return response.data;
 
     } catch (error) {
@@ -109,30 +105,49 @@ const Cases = () => {
           🎁 Cases
         </h1>
         {user && (
-          <p style={{ color: '#cfcfff', fontSize: '1.2rem' }}>
-            💰 {user.coins} coins disponibles
+          <p style={{ color: '#cfcfff', fontSize: '1.2rem', display: 'flex', gap: '8px', alignItems: 'center', justifyContent: 'center' }}>
+            <CoinIcon size={18} /> {user.coins} coins disponibles
           </p>
         )}
         
-        {/* Bouton Historique */}
-        <button
-          onClick={() => setShowHistory(true)}
-          style={{
-            background: 'linear-gradient(90deg, #3f2b96, #a259ff)',
-            color: '#fff',
-            border: 'none',
-            padding: '12px 25px',
-            borderRadius: '25px',
-            fontSize: '1rem',
-            fontWeight: 'bold',
-            cursor: 'pointer',
-            marginTop: '15px',
-            transition: 'all 0.3s ease',
-            boxShadow: '0 4px 15px rgba(162, 89, 255, 0.4)'
-          }}
-        >
-          📊 Voir l'historique
-        </button>
+        {/* Boutons d'action */}
+        <div style={{ display: 'flex', gap: '15px', justifyContent: 'center', marginTop: '15px', flexWrap: 'wrap' }}>
+          <button
+            onClick={() => setShowHistory(true)}
+            style={{
+              background: 'linear-gradient(90deg, #3f2b96, #a259ff)',
+              color: '#fff',
+              border: 'none',
+              padding: '12px 25px',
+              borderRadius: '25px',
+              fontSize: '1rem',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              boxShadow: '0 4px 15px rgba(162, 89, 255, 0.4)'
+            }}
+          >
+            📊 Voir l'historique
+          </button>
+          
+          <button
+            onClick={() => navigate('/skins')}
+            style={{
+              background: 'linear-gradient(90deg, #00ff88, #00d4aa)',
+              color: '#fff',
+              border: 'none',
+              padding: '12px 25px',
+              borderRadius: '25px',
+              fontSize: '1rem',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              boxShadow: '0 4px 15px rgba(0, 255, 136, 0.4)'
+            }}
+          >
+            🎨 Galerie de Skins
+          </button>
+        </div>
       </div>
 
       {/* Cases Grid */}
@@ -196,8 +211,8 @@ const Cases = () => {
               }}>
                 {caseItem.rarity}
               </span>
-              <span style={{ color: '#FFD700', fontWeight: 'bold', fontSize: '1.1rem' }}>
-                💰 {caseItem.price}
+              <span style={{ color: '#FFD700', fontWeight: 'bold', fontSize: '1.1rem', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                <CoinIcon size={16} /> {caseItem.price}
               </span>
             </div>
 

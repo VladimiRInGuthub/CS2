@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import './OrganicAnimations.css';
+import CoinIcon from './CoinIcon';
+import { getSkinImageUrl } from '../utils/skinImages';
 
 const CaseOpening = ({ caseItem, onOpen, onClose, user }) => {
   const [isSpinning, setIsSpinning] = useState(false);
@@ -123,8 +125,9 @@ const CaseOpening = ({ caseItem, onOpen, onClose, user }) => {
           <h2 style={{ color: '#fff', fontSize: '2rem', marginBottom: '10px' }}>
             🎲 Ouverture de {caseItem.name}
           </h2>
-          <p style={{ color: '#cfcfff', fontSize: '1.1rem' }}>
-            💰 Coût: {caseItem.price} coins | Solde: {user?.coins || 0} coins
+          <p style={{ color: '#cfcfff', fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '10px', justifyContent: 'center' }}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}><CoinIcon size={16} /> Coût: {caseItem.price}</span> |
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}><CoinIcon size={16} /> Solde: {user?.coins || 0}</span>
           </p>
         </div>
 
@@ -187,7 +190,7 @@ const CaseOpening = ({ caseItem, onOpen, onClose, user }) => {
                 }}
               >
                 <img
-                  src={item.image || 'https://via.placeholder.com/60x60/666666/FFFFFF?text=No+Image'}
+                  src={getSkinImageUrl(item)}
                   alt={item.name}
                   style={{
                     width: '60px',
@@ -330,7 +333,7 @@ const CaseOpening = ({ caseItem, onOpen, onClose, user }) => {
                 🎉 Félicitations !
               </h2>
               <img
-                src={result.skin.image || 'https://via.placeholder.com/150x150/666666/FFFFFF?text=No+Image'}
+                src={getSkinImageUrl(result.skin)}
                 alt={result.skin.name}
                 style={{
                   width: '150px',

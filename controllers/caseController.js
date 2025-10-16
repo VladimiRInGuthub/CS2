@@ -13,8 +13,14 @@ exports.getCases = async (req, res) => {
 };
 
 // 🎁 Obtenir une case spécifique
+const { validationResult } = require('express-validator');
+
 exports.getCase = async (req, res) => {
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
     const caseItem = await Case.findById(req.params.id).populate('items.skinId');
     if (!caseItem) {
       return res.status(404).json({ error: 'Case introuvable' });
@@ -26,8 +32,13 @@ exports.getCase = async (req, res) => {
 };
 
 // 🎲 Ouvrir une case
+
 exports.openCase = async (req, res) => {
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
     const { caseId } = req.body;
     const userId = req.user.id;
 
@@ -64,14 +75,9 @@ exports.openCase = async (req, res) => {
     // Déduire les coins
     user.coins -= caseItem.price;
     
-    // Ajouter le skin à l'inventaire (avec toutes les infos nécessaires)
+    // Ajouter le skin à l'inventaire (format conforme au schéma User)
     const inventoryItem = {
-      skinId: skinObj._id.toString(),
-      rarity: skinObj.rarity,
-      name: skinObj.name,
-      weapon: skinObj.weapon,
-      image: skinObj.image,
-      wear: skinObj.wear,
+      skin: skinObj._id,
       obtainedAt: new Date(),
       caseOpened: caseItem.name,
       caseId: caseItem._id.toString()

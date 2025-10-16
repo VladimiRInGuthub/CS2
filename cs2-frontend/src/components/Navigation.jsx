@@ -2,14 +2,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import GlassSurface from './GlassSurface';
+import CoinIcon from './CoinIcon';
 import UserAvatar from './UserAvatar';
 import VariableProximity from './VariableProximity';
 import './Navigation.css';
 
 const Navigation = ({ isAuthenticated }) => {
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    window.location.reload();
+    window.location.href = '/auth/logout';
   };
   const location = useLocation();
   const [user, setUser] = useState(null);
@@ -26,7 +26,7 @@ const Navigation = ({ isAuthenticated }) => {
     if (isAuthenticated) {
       const fetchUser = async () => {
         try {
-          const response = await axios.get('http://localhost:5000/api/users/me');
+          const response = await axios.get('/api/users/me', { withCredentials: true });
           setUser(response.data);
         } catch (error) {
           console.error('Erreur chargement utilisateur:', error);
@@ -96,7 +96,13 @@ const Navigation = ({ isAuthenticated }) => {
     { path: '/home', label: 'Home', icon: '🏠' },
     { path: '/dashboard', label: 'Dashboard', icon: '📊', requiresAuth: true },
     { path: '/cases', label: 'Cases', icon: '📦', requiresAuth: true },
+    { path: '/skins', label: 'Skins', icon: '🎨', requiresAuth: true },
+    { path: '/free-skins', label: 'Skins Gratuits', icon: '🆓', requiresAuth: true },
     { path: '/inventory', label: 'Inventory', icon: '🎒', requiresAuth: true },
+    { path: '/skinchanger', label: 'Skinchanger', icon: '🔧', requiresAuth: true },
+    { path: '/servers', label: 'Serveurs', icon: '🖥️', requiresAuth: true },
+    { path: '/battlepass', label: 'Battlepass', icon: '🏆', requiresAuth: true },
+    { path: '/premium', label: 'Premium', icon: '⭐', requiresAuth: true },
   ];
 
   const filteredItems = navItems.filter(item => 
@@ -182,7 +188,7 @@ const Navigation = ({ isAuthenticated }) => {
             <div className="nav-actions">
               {isAuthenticated && user && (
                 <div className="coins-display">
-                  <span className="coins-icon">💰</span>
+                  <span className="coins-icon"><CoinIcon size={16} /></span>
                   <span className="coins-amount">{user.coins || 0}</span>
                 </div>
               )}

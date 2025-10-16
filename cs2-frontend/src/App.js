@@ -1,19 +1,26 @@
 
 // src/App.js
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import Navigation from './components/Navigation';
 import Login from './pages/Login';
 import Callback from './pages/Callback';
-import Dashboard from './pages/Dashboard';
+import Dashboard from './pages/DashboardNew';
 import Cases from './pages/Cases';
+import Skins from './pages/Skins';
+import FreeSkins from './pages/FreeSkins';
 import Inventory from './pages/Inventory';
 import Settings from './pages/Settings';
 import Home from './pages/Home';
+import Skinchanger from './pages/Skinchanger';
+import Servers from './pages/Servers';
+import Battlepass from './pages/Battlepass';
+import Premium from './pages/Premium';
+import Admin from './pages/Admin';
 import './pages/Home.css';
 import axios from 'axios';
-import { setupAxiosAuth, isAuthenticated as checkIsAuthenticated, logout, verifyToken } from './utils/auth';
-import { RouteTransitionWrapper, BackgroundParticles, ScrollIndicator } from './components/GlobalAnimations';
+import { setupAxiosAuth, logout, verifyToken } from './utils/auth';
+import { BackgroundParticles, ScrollIndicator, ToastContainer } from './components/GlobalAnimations';
 import './components/OrganicAnimations.css';
 
 // Composant séparé pour gérer la route racine
@@ -27,20 +34,23 @@ const HomeRoute = ({ isAuthenticated }) => {
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [toasts, setToasts] = useState([]);
+
+  const pushToast = (message, type = 'info') => {
+    const id = Date.now() + Math.random();
+    setToasts((prev) => [...prev, { id, message, type }]);
+    setTimeout(() => setToasts((prev) => prev.filter((t) => t.id !== id)), 3500);
+  };
 
   // Configuration d'axios et vérification de la session au démarrage
   useEffect(() => {
     setupAxiosAuth();
     
     const checkAuth = async () => {
-      console.log('Checking authentication...');
-      
       try {
         const isValid = await verifyToken();
-        console.log('Session verification result:', isValid);
         setIsAuthenticated(isValid);
       } catch (error) {
-        console.log('Session check failed, setting isAuthenticated to false');
         setIsAuthenticated(false);
       }
       setIsLoading(false);
@@ -55,6 +65,7 @@ function App() {
       (response) => response,
       (error) => {
         if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+          pushToast('Session expirée. Reconnexion requise.', 'error');
           logout();
         }
         return Promise.reject(error);
@@ -75,10 +86,11 @@ function App() {
   }
 
   return (
-    <Router>
+    <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <div className="app">
         <BackgroundParticles count={20} />
         <ScrollIndicator />
+        <ToastContainer toasts={toasts} />
         <Navigation isAuthenticated={isAuthenticated} />
         <main className="main-content">
           <Routes>
@@ -88,8 +100,15 @@ function App() {
             <Route path="/callback" element={<Callback />} />
             <Route path="/dashboard" element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" replace />} />
             <Route path="/cases" element={isAuthenticated ? <Cases /> : <Navigate to="/login" replace />} />
+            <Route path="/skins" element={isAuthenticated ? <Skins /> : <Navigate to="/login" replace />} />
+            <Route path="/free-skins" element={isAuthenticated ? <FreeSkins /> : <Navigate to="/login" replace />} />
             <Route path="/inventory" element={isAuthenticated ? <Inventory /> : <Navigate to="/login" replace />} />
+            <Route path="/skinchanger" element={isAuthenticated ? <Skinchanger /> : <Navigate to="/login" replace />} />
+            <Route path="/servers" element={isAuthenticated ? <Servers /> : <Navigate to="/login" replace />} />
+            <Route path="/battlepass" element={isAuthenticated ? <Battlepass /> : <Navigate to="/login" replace />} />
+            <Route path="/premium" element={isAuthenticated ? <Premium /> : <Navigate to="/login" replace />} />
             <Route path="/settings" element={isAuthenticated ? <Settings /> : <Navigate to="/login" replace />} />
+            <Route path="/admin" element={<Admin />} />
           </Routes>
         </main>
       </div>

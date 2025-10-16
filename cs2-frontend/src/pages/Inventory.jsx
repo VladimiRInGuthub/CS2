@@ -2,32 +2,33 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import DarkVeil from '../components/DarkVeil';
+import CoinIcon from '../components/CoinIcon';
+import SkinCard from '../components/SkinCard';
+import { getSkinImageUrl } from '../utils/skinImages';
 // Styles intégrés dans le composant
 
 const Inventory = () => {
   const [user, setUser] = useState(null);
+  const [inventory, setInventory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
   const [sortBy, setSortBy] = useState('obtainedAt');
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      navigate('/login');
-      return;
-    }
-
-    const loadUser = async () => {
+    const loadData = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/users/me', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        setUser(response.data);
+        const [userRes, inventoryRes] = await Promise.all([
+          axios.get('/api/users/me', { withCredentials: true }),
+          axios.get('/api/inventory', { withCredentials: true })
+        ]);
+        
+        setUser(userRes.data);
+        const inventoryData = inventoryRes.data.inventory || inventoryRes.data || [];
+        setInventory(Array.isArray(inventoryData) ? inventoryData : []);
       } catch (error) {
         console.error('Erreur chargement:', error);
         if (error.response?.status === 401) {
-          localStorage.removeItem('token');
           navigate('/login');
         }
       } finally {
@@ -35,7 +36,7 @@ const Inventory = () => {
       }
     };
 
-    loadUser();
+    loadData();
   }, [navigate]);
 
   const getRarityColor = (rarity) => {
@@ -50,23 +51,28 @@ const Inventory = () => {
   };
 
   const getFilteredAndSortedInventory = () => {
-    if (!user?.inventory) return [];
+    if (!Array.isArray(inventory)) return [];
 
-    let filtered = user.inventory;
+    let filtered = inventory;
 
     // Filtrage par rareté
     if (filter !== 'all') {
-      filtered = filtered.filter(skin => skin.rarity === filter);
+      filtered = filtered.filter(item => {
+        const skin = item.skin || item;
+        return skin && skin.rarity === filter;
+      });
     }
 
     // Tri
     filtered.sort((a, b) => {
+      const skinA = a.skin || a;
+      const skinB = b.skin || b;
       switch (sortBy) {
         case 'rarity':
           const rarityOrder = { 'Common': 1, 'Uncommon': 2, 'Rare': 3, 'Epic': 4, 'Legendary': 5 };
-          return rarityOrder[b.rarity] - rarityOrder[a.rarity];
+          return rarityOrder[skinB.rarity] - rarityOrder[skinA.rarity];
         case 'weapon':
-          return a.weapon.localeCompare(b.weapon);
+          return skinA.weapon.localeCompare(skinB.weapon);
         case 'obtainedAt':
           return new Date(b.obtainedAt) - new Date(a.obtainedAt);
         default:
@@ -78,10 +84,22 @@ const Inventory = () => {
   };
 
   const getStats = () => {
-    if (!user?.inventory) return {};
+    if (!Array.isArray(inventory)) {
+      return {
+        total: 0,
+        byRarity: {
+          Common: 0,
+          Uncommon: 0,
+          Rare: 0,
+          Epic: 0,
+          Legendary: 0
+        },
+        byWeapon: {}
+      };
+    }
 
     const stats = {
-      total: user.inventory.length,
+      total: inventory.length,
       byRarity: {
         Common: 0,
         Uncommon: 0,
@@ -92,9 +110,14 @@ const Inventory = () => {
       byWeapon: {}
     };
 
-    user.inventory.forEach(skin => {
-      stats.byRarity[skin.rarity] = (stats.byRarity[skin.rarity] || 0) + 1;
-      stats.byWeapon[skin.weapon] = (stats.byWeapon[skin.weapon] || 0) + 1;
+    inventory.forEach(item => {
+      const skin = item.skin || item; // Support pour les deux formats
+      if (skin && skin.rarity) {
+        stats.byRarity[skin.rarity] = (stats.byRarity[skin.rarity] || 0) + 1;
+      }
+      if (skin && skin.weapon) {
+        stats.byWeapon[skin.weapon] = (stats.byWeapon[skin.weapon] || 0) + 1;
+      }
     });
 
     return stats;
@@ -113,7 +136,7 @@ const Inventory = () => {
     );
   }
 
-  const inventory = getFilteredAndSortedInventory();
+  const filteredInventory = getFilteredAndSortedInventory();
   const stats = getStats();
 
   return (
@@ -129,8 +152,10 @@ const Inventory = () => {
           🎒 Inventaire
         </h1>
         {user && (
-          <p style={{ color: '#cfcfff', fontSize: '1.2rem' }}>
-            💰 {user.coins} coins • 🎁 {stats.total} skins
+          <p style={{ color: '#cfcfff', fontSize: '1.2rem', display: 'flex', alignItems: 'center', gap: '14px', justifyContent: 'center' }}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}><CoinIcon size={18} /> {user.coins} coins</span>
+            •
+            <span>🎁 {stats.total} skins</span>
           </p>
         )}
       </div>
@@ -145,7 +170,7 @@ const Inventory = () => {
         position: 'relative',
         zIndex: 1
       }}>
-        {Object.entries(stats.byRarity).map(([rarity, count]) => (
+        {Object.entries(stats.byRarity || {}).map(([rarity, count]) => (
           <div key={rarity} style={{
             backgroundColor: 'rgba(28, 28, 42, 0.8)',
             borderRadius: '10px',
@@ -249,69 +274,41 @@ const Inventory = () => {
           position: 'relative',
           zIndex: 1
         }}>
-          {inventory.map((skin, index) => (
-            <div key={index} style={{
-              backgroundColor: 'rgba(28, 28, 42, 0.9)',
-              borderRadius: '15px',
-              padding: '20px',
-              textAlign: 'center',
-              boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
-              border: `2px solid ${getRarityColor(skin.rarity)}`,
-              backdropFilter: 'blur(15px)',
-              transition: 'all 0.3s ease',
-              cursor: 'pointer'
-            }}
-            onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
-            onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
-            >
-              <img 
-                src={skin.image || 'https://via.placeholder.com/300x200/666666/FFFFFF?text=No+Image'} 
-                alt={skin.name}
-                style={{ 
-                  width: '100%', 
-                  height: '180px', 
-                  objectFit: 'cover', 
-                  borderRadius: '10px',
-                  marginBottom: '15px',
-                  border: `2px solid ${getRarityColor(skin.rarity)}`
-                }}
-              />
-              
-              <h3 style={{ color: '#fff', fontSize: '1.2rem', marginBottom: '8px' }}>
-                {skin.name}
-              </h3>
-              
-              <div style={{ 
-                display: 'flex', 
-                justifyContent: 'space-between', 
-                alignItems: 'center',
-                marginBottom: '10px'
-              }}>
-                <span style={{ 
-                  color: getRarityColor(skin.rarity), 
-                  fontWeight: 'bold',
-                  fontSize: '0.9rem'
+          {getFilteredAndSortedInventory().map((item, index) => {
+            const skin = item.skin || item; // Support pour les deux formats
+            if (!skin) return null; // Protection contre les skins null
+            return (
+              <div key={index} style={{ position: 'relative' }}>
+                <SkinCard 
+                  skin={skin}
+                  size="medium"
+                  onClick={(selectedSkin) => {
+                    // Logique pour afficher les détails du skin
+                    console.log('Skin sélectionné:', selectedSkin);
+                  }}
+                />
+                
+                {/* Informations supplémentaires */}
+                <div style={{ 
+                  marginTop: '10px',
+                  padding: '10px',
+                  background: 'rgba(28, 28, 42, 0.7)',
+                  borderRadius: '8px',
+                  fontSize: '0.8rem',
+                  color: '#cfcfff'
                 }}>
-                  {skin.rarity}
-                </span>
-                <span style={{ color: '#cfcfff', fontSize: '0.9rem' }}>
-                  {skin.weapon}
-                </span>
+                  <div style={{ marginBottom: '5px' }}>
+                    📅 Obtenu le {new Date(item.obtainedAt).toLocaleDateString('fr-FR')}
+                  </div>
+                  {item.caseOpened && (
+                    <div style={{ color: '#a259ff', fontStyle: 'italic' }}>
+                      🎁 Depuis: {item.caseOpened}
+                    </div>
+                  )}
+                </div>
               </div>
-
-              {skin.wear && (
-                <p style={{ color: '#b6aaff', fontSize: '0.8rem', marginBottom: '10px' }}>
-                  {skin.wear}
-                </p>
-              )}
-
-              {skin.obtainedAt && (
-                <p style={{ color: '#888', fontSize: '0.8rem' }}>
-                  Obtenu le {new Date(skin.obtainedAt).toLocaleDateString()}
-                </p>
-              )}
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 

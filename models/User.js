@@ -8,16 +8,17 @@ const UserSchema = new mongoose.Schema({
   coins: { type: Number, default: 1000 },
   inventory: [
     {
-      skinId: String,
-      rarity: String,
-      name: String,
-      weapon: String,
-      wear: { type: String, default: 'Field-Tested' },
+      skin: { type: mongoose.Schema.Types.ObjectId, ref: 'Skin' },
       obtainedAt: { type: Date, default: Date.now },
       caseOpened: String,
       caseId: String
     }
   ],
+  equippedSkins: {
+    type: Map,
+    of: mongoose.Schema.Types.ObjectId,
+    default: {}
+  },
   caseHistory: [
     {
       caseId: mongoose.Schema.Types.ObjectId,
@@ -42,6 +43,8 @@ const UserSchema = new mongoose.Schema({
       Legendary: { type: Number, default: 0 }
     }
   },
+  isAdmin: { type: Boolean, default: false },
+  adminPassword: { type: String, select: false }, // Mot de passe admin (hashé)
   createdAt: { type: Date, default: Date.now }
 });
 

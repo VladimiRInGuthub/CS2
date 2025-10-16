@@ -1,42 +1,39 @@
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
-const jwt = require('jsonwebtoken');
 const config = require('../config/config');
+const morgan = require('morgan');
+
+// Simple request logger for this router (optional if global)
+router.use(morgan('tiny'));
 
 // ✅ STEAM LOGIN
-router.get('/steam', passport.authenticate('steam'));
+router.get('/steam', (req, res, next) => {
+  console.log('[AUTH] Steam login initiated');
+  next();
+}, passport.authenticate('steam'));
 
 // ✅ STEAM CALLBACK avec session
 router.get('/steam/return', (req, res, next) => {
   passport.authenticate('steam', (err, user) => {
-    if (err || !user) return res.redirect(`${config.FRONTEND_URL}/login`);
+    if (err || !user) {
+      console.error('[AUTH] Steam callback error:', err);
+      return res.redirect(`${config.FRONTEND_URL}/login`);
+    }
 
     // Créer la session utilisateur
     req.logIn(user, (err) => {
-      if (err) return res.redirect(`${config.FRONTEND_URL}/login`);
+      if (err) {
+        console.error('[AUTH] req.logIn failed:', err);
+        return res.redirect(`${config.FRONTEND_URL}/login`);
+      }
+      console.log('[AUTH] Login success for user', user.username || user.steamId);
       res.redirect(`${config.FRONTEND_URL}/dashboard`);
     });
   })(req, res, next);
 });
 
-// ✅ GOOGLE LOGIN
-router.get('/google', passport.authenticate('google', { scope: ['profile'] }));
-
-// ✅ GOOGLE CALLBACK avec redirection + JWT
-router.get('/google/callback', (req, res, next) => {
-  passport.authenticate('google', { session: false }, (err, user) => {
-    if (err || !user) return res.redirect(`${config.FRONTEND_URL}/login`);
-
-    const token = jwt.sign(
-      { id: user._id, username: user.username },
-      config.JWT_SECRET,
-      { expiresIn: '7d' }
-    );
-
-    res.redirect(`${config.FRONTEND_URL}/?token=${token}`);
-  })(req, res, next);
-});
+// Google auth retiré pour simplification; réactiver si nécessaire
 
 // ✅ Vérifier l'état de la session
 router.get('/me', (req, res) => {
@@ -53,10 +50,18 @@ router.get('/me', (req, res) => {
 });
 
 // ✅ Déconnexion
-router.get('/logout', (req, res) => {
+router.get('/logout', (req, res, next) => {
+  const username = req.user?.username || req.user?.steamId;
   req.logout((err) => {
-    if (err) return res.status(500).json({ message: 'Erreur lors de la déconnexion' });
-    res.json({ message: 'Déconnecté avec succès' });
+    if (err) {
+      console.error('[AUTH] Logout error:', err);
+      return res.status(500).json({ message: 'Erreur lors de la déconnexion' });
+    }
+    req.session.destroy(() => {
+      console.log('[AUTH] Logout success for user', username);
+      res.clearCookie('connect.sid');
+      res.redirect(`${config.FRONTEND_URL}/login`);
+    });
   });
 });
 
